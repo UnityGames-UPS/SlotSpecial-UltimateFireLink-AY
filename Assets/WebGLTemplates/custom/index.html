@@ -40,32 +40,78 @@
 
   <canvas id="unity-canvas" tabindex="-1"></canvas>
   <script>
-    const canvas=document.querySelector("#unity-canvas");
+    const canvas = document.querySelector("#unity-canvas");
 
-    function resizeCanvas() {
-      const aspectRatio = 16 / 9; // Aspect ratio of the canvas
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
-
-      if (windowWidth < windowHeight) {
-        let canvasWidth = windowWidth;
-        let canvasHeight = canvasWidth / aspectRatio;
-
-        if (canvasHeight > windowHeight) {
-          canvasHeight = windowHeight;
-          canvasWidth = canvasHeight * aspectRatio;
+    // // Function to detect if the device is mobile
+    function isMobile(unityInstance) {
+        console.log("Called isMobile");
+        
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        // Check for various mobile devices
+        var isMobile = /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent) || /Windows Phone/i.test(userAgent);
+        // console.log(isMobile);
+        // unityInstance.SendMessage('CanvasSwitcher', 'OnMobileDeviceDetected', isMobile);
+        // Call Unity's OnMobileDeviceDetected method with the result
+        var s="";
+        if(isMobile == true){
+          s="A";
+          AspectRatio=9 / 16;
         }
-
-        canvas.style.width = `${canvasWidth}px`;
-        canvas.style.height = `${canvasHeight}px`;
-
-      } else {
-
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-      }
+        else{
+          AspectRatio=16/ 9;
+          s="B";
+        }
+        if (typeof unityInstance !== "undefined") {
+           
+            unityInstance.SendMessage('CanvasSwitcher', 'OnMobileDeviceDetected', s);
+        }
+        else{
+          console.log("Unity instance is undefined");
+        }
     }
 
+    // Resize canvas based on device type and window size
+    function resizeCanvas() {
+        const aspectRatio = AspectRatio;
+
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
+
+        if (AspectRatio == 9/16) {
+            // Mobile Portrait Mode (9:16 aspect ratio)
+            let canvasWidth = windowWidth;
+            let canvasHeight = canvasWidth * aspectRatio;
+
+            if (canvasHeight > windowHeight) {
+                canvasHeight = windowHeight;
+                canvasWidth = canvasHeight * (1 / aspectRatio);
+            }
+
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+        } else {
+            // PC Landscape Mode (16:9 aspect ratio)
+            let canvasWidth = windowWidth;
+            let canvasHeight = canvasWidth / aspectRatio;
+
+            if (canvasHeight > windowHeight) {
+                canvasHeight = windowHeight;
+                canvasWidth = canvasHeight * aspectRatio;
+            }
+
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+        }
+    }
+
+    // Call resizeCanvas whenever the window is resized
+    window.addEventListener("resize", resizeCanvas);
+
+    // Call resizeCanvas on initial load
+    resizeCanvas();
+
+
+    var AspectRatio;
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
@@ -101,18 +147,21 @@
         script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
           }).then((unityInstance) => {
+            setTimeout(function() {isMobile(unityInstance)}, 6);
           }).catch((message) => {
             alert(message);
           });
+          
         };
+        script
         
         document.body.appendChild(script);
         window.addEventListener('load', resizeCanvas());
   </script>
      <script type="text/javascript">
-        console.log = function() {};
-        console.warn = function() {};
-        console.error = function() {};
+        // console.log = function() {};
+        // console.warn = function() {};
+        // console.error = function() {};
     </script>
     <script>
       window.focus();

@@ -8,7 +8,6 @@ using UnityEngine.Networking;
 
 public class UIManager : MonoBehaviour
 {
-
     [Header("Menu UI")]
     [SerializeField]
     private Button Menu_Button;
@@ -30,14 +29,14 @@ public class UIManager : MonoBehaviour
     private Button Privacy_Button;
 
     [SerializeField]
-    private Button Exit_Button;
+    internal Button Exit_Button;
     [SerializeField]
     private GameObject Exit_Object;
     [SerializeField]
     private RectTransform Exit_RT;
 
     [SerializeField]
-    private Button Paytable_Button;
+    internal Button Paytable_Button;
     [SerializeField]
     private GameObject Paytable_Object;
     [SerializeField]
@@ -81,9 +80,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button SettingsExit_Button;
     [SerializeField]
-    private Button Sound_Button;
+    internal Button Sound_Button;
     [SerializeField]
-    private Button Music_Button;
+    internal Button Music_Button;
 
     [SerializeField]
     private GameObject MusicOn_Object;
@@ -163,6 +162,23 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button CrossQuit_Button;
 
+    [Header("Mobile and PC UI")]
+    [SerializeField]
+    internal GameObject Mobile_UltimateFireLinkText;
+    [SerializeField]
+    internal GameObject PC_UltimateFireLinkText;
+    [SerializeField]
+    internal GameObject Mobile_MajorMiniMinor;
+    [SerializeField]
+    internal GameObject PC_MajorMiniMinor;
+    [SerializeField]
+    internal GameObject Mobile_ButonPanel;
+    [SerializeField]
+    internal GameObject PC_Buttonpanel;
+    [SerializeField]
+    internal GameObject Mobile_TopBar;
+
+    [Space]
     [SerializeField]
     private AudioController audioController;
     [SerializeField]
@@ -270,6 +286,33 @@ public class UIManager : MonoBehaviour
         if(SkipWinAnimation) SkipWinAnimation.onClick.AddListener(SkipWin);
     }
 
+
+    public void IsPcToggle(bool isPC)
+    {
+        if(isPC)
+        {
+
+            Mobile_MajorMiniMinor.SetActive(false);
+            Mobile_UltimateFireLinkText.SetActive(false);
+            Mobile_TopBar.SetActive(false);
+            Mobile_ButonPanel.SetActive(false);
+
+            PC_Buttonpanel.SetActive(true);
+            PC_MajorMiniMinor.SetActive(true);
+            PC_UltimateFireLinkText.SetActive(true);
+        }
+        else
+        {
+            Mobile_MajorMiniMinor.SetActive(true);
+            Mobile_UltimateFireLinkText.SetActive(true);
+            Mobile_TopBar.SetActive(true);
+            Mobile_ButonPanel.SetActive(true);
+
+            PC_Buttonpanel.SetActive(false);
+            PC_MajorMiniMinor.SetActive(false);
+            PC_UltimateFireLinkText.SetActive(false);
+        }
+    }
     internal void LowBalPopup()
     {
         OpenPopup(LBPopup_Object);
