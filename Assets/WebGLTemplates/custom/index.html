@@ -55,10 +55,10 @@
         var s="";
         if(isMobile == true){
           s="A";
-          AspectRatio=9 / 16;
+          AspectRatio=1080 / 2340;
         }
         else{
-          AspectRatio=16/ 9;
+          AspectRatio=2340/ 1080;
           s="B";
         }
         if (typeof unityInstance !== "undefined") {
@@ -84,7 +84,7 @@
 
             if (canvasHeight > windowHeight) {
                 canvasHeight = windowHeight;
-                canvasWidth = canvasHeight * (1 / aspectRatio);
+                canvasWidth = canvasHeight /  aspectRatio;
             }
 
             canvas.style.width = `${canvasWidth}px`;

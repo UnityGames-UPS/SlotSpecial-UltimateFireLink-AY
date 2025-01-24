@@ -6,6 +6,14 @@ using TMPro;
 
 public class CanvasScalerSwitcher : MonoBehaviour
 {
+    [Header("For Testing in unity")]
+    public bool isTesting = false;
+    public bool isPC = true;
+
+
+
+    [Space]
+    [Space]
     [SerializeField]
     private CanvasScaler canvasOP;
 
@@ -52,23 +60,28 @@ public class CanvasScalerSwitcher : MonoBehaviour
         Application.ExternalCall("isMobile");
 #endif
     }
+    private void Start()
+    {
+        if(isTesting)
+        {
+            if (isPC) AssignValuesForPC();
+            else AssignValuesForMobile();
+        }
+    }
 
-    
     // This method will be called from the JavaScript side
     public void OnMobileDeviceDetected(string s)
     {
         Debug.Log("Called OnMobileDeviceDetected");
         if (s == "A")
         {
-            canvasOP.referenceResolution = new Vector2(1080f, 2340f);
-            Uimanager.IsPcToggle(false);
+            
             AssignValuesForMobile();
             Debug.Log("Dev_Test:"+"This is a mobile device.-----------------------------------------");
         }
         else
         {
-            canvasOP.referenceResolution = new Vector2(2340f, 1080f);
-            Uimanager.IsPcToggle(true);
+           
             AssignValuesForPC();
             Debug.Log("Dev_Test:" + "This is a PC device.--------------------------------------------");
         }
@@ -76,6 +89,9 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
     public void AssignValuesForPC()
     {
+        canvasOP.referenceResolution = new Vector2(2340f, 1080f);
+        Uimanager.IsPcToggle(true);
+
         BGObject.sprite = LandscapeBG;
 
         Uimanager.Paytable_Button = p_ibutton;
@@ -83,16 +99,19 @@ public class CanvasScalerSwitcher : MonoBehaviour
         Uimanager.Music_Button = p_MusicButton;
         Uimanager.Exit_Button = p_backButton;
 
-        slotManager.Balance_text = p_creditText;
-        slotManager.TotalBet_text = p_TotalbetText;
-        slotManager.TotalWin_text = p_winText;
-        slotManager.TBetPlus_Button = p_plusButton;
-        slotManager.TBetMinus_Button = p_minusButton;
+       // slotManager.Balance_text = p_creditText;
+       // slotManager.TotalBet_text = p_TotalbetText;
+       // slotManager.TotalWin_text = p_winText;
+       // slotManager.TBetPlus_Button = p_plusButton;
+       // slotManager.TBetMinus_Button = p_minusButton;
 
     }
 
     public void AssignValuesForMobile()
     {
+        canvasOP.referenceResolution = new Vector2(1080f, 2340f);
+        Uimanager.IsPcToggle(false);
+
         BGObject.sprite = PotrateBG;
 
         Uimanager.Paytable_Button = m_ibutton;
@@ -100,11 +119,11 @@ public class CanvasScalerSwitcher : MonoBehaviour
         Uimanager.Music_Button = m_MusicButton;
         Uimanager.Exit_Button = m_backButton;
 
-        slotManager.Balance_text = m_creditText;
-        slotManager.TotalBet_text = m_TotalbetText;
-        slotManager.TotalWin_text = m_winText;
-        slotManager.TBetPlus_Button = m_plusButton;
-        slotManager.TBetMinus_Button = m_minusButton;
+        //slotManager.Balance_text = m_creditText;
+        //slotManager.TotalBet_text = m_TotalbetText;
+        //slotManager.TotalWin_text = m_winText;
+        //slotManager.TBetPlus_Button = m_plusButton;
+        //slotManager.TBetMinus_Button = m_minusButton;
 
     }
 }
