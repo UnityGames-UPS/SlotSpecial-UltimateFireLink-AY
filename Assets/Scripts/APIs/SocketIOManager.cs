@@ -43,8 +43,8 @@ public class SocketIOManager : MonoBehaviour
     [SerializeField]
     private string testToken;
 
-    // protected string gameID = "SL-VIK";
-    protected string gameID = "";
+    protected string gameID = "SL-FLC";
+    //protected string gameID = "";
 
     internal bool isLoaded = false;
 
@@ -254,7 +254,7 @@ public class SocketIOManager : MonoBehaviour
             {
                 this.manager.Socket.Emit(eventName);
             }
-        }   
+        }
         else
         {
             Debug.LogWarning("Socket is not connected.");
@@ -275,7 +275,7 @@ public class SocketIOManager : MonoBehaviour
 
         string id = myData.id;
 
-        switch(id)
+        switch (id)
         {
             case "InitData":
                 {
@@ -286,10 +286,10 @@ public class SocketIOManager : MonoBehaviour
                     if (!SetInit)
                     {
                         Debug.Log(jsonObject);
-                        List<string> LinesString = ConvertListListIntToListString(initialData.Lines);
-                        List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
-                        InitialReels = RemoveQuotes(InitialReels);
-                        PopulateSlotSocket(InitialReels, LinesString);
+                        List<string> LinesString = ConvertListListIntToListString(initialData.linesApiData);
+                        //  List<string> InitialReels = ConvertListOfListsToStrings(initialData.Reel);
+                        //   InitialReels = RemoveQuotes(InitialReels);
+                        PopulateSlotSocket();
                         SetInit = true;
                     }
                     else
@@ -301,7 +301,7 @@ public class SocketIOManager : MonoBehaviour
             case "ResultData":
                 {
                     // Debug.Log(jsonObject);
-                    myData.message.GameData.FinalResultReel = ConvertListOfListsToStrings(myData.message.GameData.ResultReel);
+                    // myData.message.GameData.FinalResultReel = ConvertListOfListsToStrings(myData.message.GameData.ResultReel);
                     myData.message.GameData.FinalsymbolsToEmit = TransformAndRemoveRecurring(myData.message.GameData.symbolsToEmit);
                     resultData = myData.message.GameData;
                     playerdata = myData.message.PlayerData;
@@ -326,13 +326,13 @@ public class SocketIOManager : MonoBehaviour
         uiManager.InitialiseUIData(initUIData.AbtLogo.link, initUIData.AbtLogo.logoSprite, initUIData.ToULink, initUIData.PopLink, initUIData.paylines);
     }
 
-    private void PopulateSlotSocket(List<string> slotPop, List<string> LineIds)
+    private void PopulateSlotSocket()
     {
         slotManager.shuffleInitialMatrix();
-        for (int i = 0; i < LineIds.Count; i++)
-        {
-            slotManager.FetchLines(LineIds[i], i);
-        }
+        //for (int i = 0; i < LineIds.Count; i++)
+        //{
+        //    slotManager.FetchLines(LineIds[i], i);
+        //}
 
         slotManager.SetInitialUI();
 
@@ -347,13 +347,21 @@ public class SocketIOManager : MonoBehaviour
         message.data = new BetData();
         message.data.currentBet = currBet;
         message.data.spins = 1;
-        message.data.currentLines = 20;
+        message.data.currentLines = 50;
         message.id = "SPIN";
         // Serialize message data to JSON
         string json = JsonUtility.ToJson(message);
         SendDataWithNamespace("message", json);
     }
+    internal void AcumulateFreeSpin(int selectedButtonindex)
+    {
+        var message = new { id = "FREESPINOPTION", data = new { option = selectedButtonindex } };
+        string json = JsonConvert.SerializeObject(message);
+        SendDataWithNamespace("message", json);
+        Debug.Log("Dev_Test:  "+json);
+        Debug.Log(JsonConvert.SerializeObject(message));
 
+    }
     private List<string> RemoveQuotes(List<string> stringList)
     {
         for (int i = 0; i < stringList.Count; i++)
@@ -421,6 +429,19 @@ public class SocketIOManager : MonoBehaviour
 }
 
 [Serializable]
+public class freeSpinSelect
+{
+    public string id;
+    public data option;
+}
+[Serializable]
+public class data
+{
+
+    public int option;
+}
+
+[Serializable]
 public class BetData
 {
     public double currentBet;
@@ -466,28 +487,61 @@ public class AbtLogo
 public class GameData
 {
     public List<List<string>> Reel { get; set; }
+    public List<BonusTrigger> bonusTrigger { get; set; }            //
     public List<List<int>> Lines { get; set; }
+    public List<List<int>> linesApiData { get; set; }                 //
+    public List<FreespinOption> freespinOptions { get; set; }      //
     public List<double> Bets { get; set; }
-    public bool canSwitchLines { get; set; }
-    public List<int> LinesCount { get; set; }
-    public List<int> autoSpin { get; set; }
     public List<List<string>> ResultReel { get; set; }
+    public List<List<int>> resultSymbols { get; set; }                     //
     public List<int> linesToEmit { get; set; }
     public List<List<string>> symbolsToEmit { get; set; }
+    public List<ScatterValue> scatterValues { get; set; }           //
     public double WinAmout { get; set; }
     public FreeSpins freeSpins { get; set; }
+    public Bonus bonus { get; set; }
     public List<string> FinalsymbolsToEmit { get; set; }
     public List<string> FinalResultReel { get; set; }
-    public double jackpot { get; set; }
+   // public double jackpot { get; set; }
     public bool isBonus { get; set; }
     public double BonusStopIndex { get; set; }
+    public List<double> jackpotMultipliers { get; set; }
 }
 
 [Serializable]
-public class FreeSpins
+public class FreespinOption
 {
     public int count { get; set; }
-    public bool isNewAdded { get; set; }
+    public List<int> multiplier { get; set; }
+}
+
+[Serializable]
+public class BonusTrigger
+{
+    public List<int> count { get; set; }
+    public int rows { get; set; }
+}
+[Serializable]
+public class Bonus
+{
+    public List<List<int>> matrix { get; set; }
+    public bool isTriggered { get; set; }
+    public int scatterCount { get; set; }
+    public int spinCount { get; set; }
+}
+[Serializable]
+public class FreeSpins
+{
+    public bool isTriggered { get; set; }
+    public int count { get; set; }
+    public int optionIndex { get; set; }
+}
+
+[Serializable]
+public class ScatterValue
+{
+    public double value { get; set; }
+    public List<int> index { get; set; }
 }
 
 [Serializable]
