@@ -66,20 +66,29 @@ public class AudioController : MonoBehaviour
         switch (type)
         {
             case "spin":
-                index = 0;
-                audioPlayer_wl.loop = true;
+                index = 250;
+                //audioPlayer_wl.loop = true;
                 break;
             case "win":
-                index = 1;
+                index = 8;
                 break;
             case "lose":
                 index = 2;
                 break;
             case "spinStop":
-                index = 3;
+                index = 10;
                 break;
             case "megaWin":
+                index = 0;
+                break;
+            case "bonusStart":
+                index = 1;
+                break;
+            case "fireBlast":
                 index = 4;
+                break;
+            case "fireWhoose":
+                index = 5;
                 break;
         }
         StopWLAaudio();
@@ -112,6 +121,7 @@ public class AudioController : MonoBehaviour
 
     internal void PlayButtonAudio()
     {
+        audioPlayer_button.clip = clips[3];
         audioPlayer_button.Play();
     }
 

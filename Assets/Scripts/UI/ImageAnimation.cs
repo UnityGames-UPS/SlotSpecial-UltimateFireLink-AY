@@ -41,14 +41,15 @@ public class ImageAnimation : MonoBehaviour
 		{
 			Instance = this;
 		}
-		if(StartOnAwake){
-			StartAnimation();
-		}
+		
 	}
 
 	private void OnEnable()
 	{
-
+		if (StartOnAwake)
+		{
+			StartAnimation();
+		}
 	}
 
 	private void OnDisable()
