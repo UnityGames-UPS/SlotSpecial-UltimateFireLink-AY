@@ -39,7 +39,8 @@ public class SocketIOManager : MonoBehaviour
     protected string SocketURI = null;
     // protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";
     protected string TestSocketURI = "http://localhost:5001/";
-
+   // protected string TestSocketURI = "https://fuzzy-space-happiness-6jv566jpv6jhrw5v-5000.app.github.dev/";
+   // protected string TestSocketURI = "https://6m8kh503-5000.inc1.devtunnels.ms/";
     [SerializeField]
     private string testToken;
 
