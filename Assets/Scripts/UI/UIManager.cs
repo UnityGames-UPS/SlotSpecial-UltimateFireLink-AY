@@ -248,13 +248,13 @@ public class UIManager : MonoBehaviour
         if (AboutExit_Button) AboutExit_Button.onClick.AddListener(delegate { ClosePopup(AboutPopup_Object); });
 
         if (Paytable_Button) Paytable_Button.onClick.RemoveAllListeners();
-        if (Paytable_Button) Paytable_Button.onClick.AddListener(delegate { OpenPopup(PaytablePopup_Object); });
+        if (Paytable_Button) Paytable_Button.onClick.AddListener(delegate { OpenPopup(PaytablePopup_Object); audioController.PlayButtonAudio(); });
 
         if (PaytableExit_Button) PaytableExit_Button.onClick.RemoveAllListeners();
-        if (PaytableExit_Button) PaytableExit_Button.onClick.AddListener(delegate { ClosePopup(PaytablePopup_Object); });
+        if (PaytableExit_Button) PaytableExit_Button.onClick.AddListener(delegate { ClosePopup(PaytablePopup_Object); audioController.PlayButtonAudio(); });
 
         if (GoToHomePage_Button) GoToHomePage_Button.onClick.RemoveAllListeners();
-        if (GoToHomePage_Button) GoToHomePage_Button.onClick.AddListener(delegate { ClosePopup(PaytablePopup_Object); });
+        if (GoToHomePage_Button) GoToHomePage_Button.onClick.AddListener(delegate { ClosePopup(PaytablePopup_Object); audioController.PlayButtonAudio(); });
 
         if (paytable_Next_Button) paytable_Next_Button.onClick.RemoveAllListeners();
         if (paytable_Next_Button) paytable_Next_Button.onClick.AddListener(OnPaytablePriviousButtonClicked);
@@ -282,6 +282,7 @@ public class UIManager : MonoBehaviour
         if (NoQuit_Button) NoQuit_Button.onClick.AddListener(delegate { if (!isExit) { 
             ClosePopup(QuitPopup_Object); 
             Debug.Log("quit event: pressed NO Button ");
+                audioController.PlayButtonAudio();
             } });
 
         if (CrossQuit_Button) CrossQuit_Button.onClick.RemoveAllListeners();
@@ -431,6 +432,7 @@ public class UIManager : MonoBehaviour
 
     private void  OnPaytablePriviousButtonClicked()
     {
+        audioController.PlayButtonAudio();
         if (CurrentPaytablePage > 0)
         {
             CurrentPaytablePage--;
@@ -447,6 +449,7 @@ public class UIManager : MonoBehaviour
 
     private void OnPaytableNextButtonClicked()
     {
+        audioController.PlayButtonAudio();
         if (CurrentPaytablePage < PaytablePages.Length-1)
         {
             CurrentPaytablePage++;
@@ -478,14 +481,16 @@ public class UIManager : MonoBehaviour
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
         if (FreespinBorder) FreespinBorder.SetActive(true);
         if (NormalBorder) NormalBorder.SetActive(false);
-     
+
+        FreeSpinOptionButton[5].SelectEffectImg.gameObject.SetActive(false);
+        if (FreeSpinOptionButton[5].ButtonAnim != null) FreeSpinOptionButton[5].ButtonAnim.Kill();
+        transform.localScale = FreeSpinOptionButton[5].originalScale;
+
         if(slotManager.WasAutoSpinOn)
         {
-            FreeSpinOptionButton[5].SelectEffectImg.gameObject.SetActive(false);
-            if (FreeSpinOptionButton[5].ButtonAnim != null) FreeSpinOptionButton[5].ButtonAnim.Kill();
-            transform.localScale = FreeSpinOptionButton[5].originalScale;
-            FreeSpinOptionButton[5].OnButtonClicked();
-            //slotManager.FreeSpinOptionSelected(8,0,0,0);
+        
+           FreeSpinOptionButton[5].OnButtonClicked();
+     
         }
 
     }
