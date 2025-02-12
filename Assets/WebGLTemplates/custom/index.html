@@ -41,7 +41,9 @@
   <canvas id="unity-canvas" tabindex="-1"></canvas>
   <script>
     const canvas = document.querySelector("#unity-canvas");
-
+    var IsMobile = false;
+    var AspectRatio =16/9;
+    let resizeTimeout;
     // // Function to detect if the device is mobile
     function isMobile(unityInstance) {
         console.log("Called isMobile");
@@ -50,6 +52,7 @@
         // Check for various mobile devices
         var isMobile = /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent) || /Windows Phone/i.test(userAgent);
         // console.log(isMobile);
+        IsMobile = isMobile;
         // unityInstance.SendMessage('CanvasSwitcher', 'OnMobileDeviceDetected', isMobile);
         // Call Unity's OnMobileDeviceDetected method with the result
         var s="";
@@ -60,6 +63,7 @@
         else{
           AspectRatio=16/9;
           s="B";
+          resizeCanvas();
         }
         if (typeof unityInstance !== "undefined") {
            
@@ -77,18 +81,10 @@
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
 
-        if (AspectRatio == 9/16) {
-            // Mobile Portrait Mode (9:16 aspect ratio)
-            let canvasWidth = windowWidth;
-            let canvasHeight = canvasWidth * aspectRatio;
-
-            if (canvasHeight > windowHeight) {
-                canvasHeight = windowHeight;
-                canvasWidth = canvasHeight /  aspectRatio;
-            }
-
-            canvas.style.width = `${canvasWidth}px`;
-            canvas.style.height = `${canvasHeight}px`;
+        if (IsMobile) {
+          console.log("xxxxxxxxx")
+          canvas.style.width = `${100}%`;
+          canvas.style.height = `${100}%`;
         } else {
             // PC Landscape Mode (16:9 aspect ratio)
             let canvasWidth = windowWidth;
@@ -105,14 +101,13 @@
     }
 
     // Call resizeCanvas whenever the window is resized
-    window.addEventListener("resize", resizeCanvas);
-
+    
     // Call resizeCanvas on initial load
-    resizeCanvas();
+
+   
+    // window.addEventListener("resize", resizeCanvas);
 
 
-    var AspectRatio;
-    let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(resizeCanvas, 50);
@@ -147,7 +142,7 @@
         script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
           }).then((unityInstance) => {
-            setTimeout(function() {isMobile(unityInstance)}, 6);
+            isMobile(unityInstance);
           }).catch((message) => {
             alert(message);
           });
@@ -156,7 +151,7 @@
         script
         
         document.body.appendChild(script);
-        window.addEventListener('load', resizeCanvas());
+       // window.addEventListener('load', resizeCanvas());
   </script>
      <script type="text/javascript">
         // console.log = function() {};
