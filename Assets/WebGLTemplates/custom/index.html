@@ -31,8 +31,6 @@
   }
 
 
-
-
   </style>
 </head>
 
@@ -50,7 +48,8 @@
         
         var userAgent = navigator.userAgent || navigator.vendor || window.opera;
         // Check for various mobile devices
-        var isMobile = /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent) || /Windows Phone/i.test(userAgent);
+        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
         // console.log(isMobile);
         IsMobile = isMobile;
         // unityInstance.SendMessage('CanvasSwitcher', 'OnMobileDeviceDetected', isMobile);
@@ -63,8 +62,8 @@
         else{
           AspectRatio=16/9;
           s="B";
-          resizeCanvas();
         }
+        resizeCanvas();
         if (typeof unityInstance !== "undefined") {
            
             unityInstance.SendMessage('CanvasSwitcher', 'OnMobileDeviceDetected', s);
@@ -76,37 +75,40 @@
 
     // Resize canvas based on device type and window size
     function resizeCanvas() {
-        const aspectRatio = AspectRatio;
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const aspectRatio = isPortrait ? (1080 / 2340) : AspectRatio;
 
-        let windowWidth = window.innerWidth;
-        let windowHeight = window.innerHeight;
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
 
-        if (IsMobile) {
-          console.log("xxxxxxxxx")
-          canvas.style.width = `${100}%`;
-          canvas.style.height = `${100}%`;
-        } else {
-            // PC Landscape Mode (16:9 aspect ratio)
-            let canvasWidth = windowWidth;
-            let canvasHeight = canvasWidth / aspectRatio;
+    if (IsMobile) {
+        console.log("Mobile Detected");
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        canvas.style.width = `${100}%`;
+        canvas.style.height = `${100}%`;
 
-            if (canvasHeight > windowHeight) {
-                canvasHeight = windowHeight;
-                canvasWidth = canvasHeight * aspectRatio;
-            }
 
-            canvas.style.width = `${canvasWidth}px`;
-            canvas.style.height = `${canvasHeight}px`;
+    } else {
+        // PC Landscape Mode
+        let canvasWidth = windowWidth;
+        let canvasHeight = canvasWidth / aspectRatio;
+
+        if (canvasHeight > windowHeight) {
+            canvasHeight = windowHeight;
+            canvasWidth = canvasHeight * aspectRatio;
         }
+
+        canvas.style.width = `${canvasWidth}px`;
+        canvas.style.height = `${canvasHeight}px`;
+
+        // Force redraw to fix potential rendering issues
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
     }
-
-    // Call resizeCanvas whenever the window is resized
-    
-    // Call resizeCanvas on initial load
-
-   
-    // window.addEventListener("resize", resizeCanvas);
-
+}
 
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);

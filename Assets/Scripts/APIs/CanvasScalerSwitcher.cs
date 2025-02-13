@@ -133,6 +133,7 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
     public void AssignValuesForMobile()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         canvasOP.referenceResolution = new Vector2(1080f, 2340f);
         Uimanager.IsPcToggle(false);
 
