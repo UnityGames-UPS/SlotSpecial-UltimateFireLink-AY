@@ -15,6 +15,7 @@ public class FreeSpinSelectButton : MonoBehaviour
     [SerializeField] internal Image SelectEffectImg;
     [SerializeField] internal Vector3 originalScale = new Vector3(1,1,1);
     internal Tween ButtonAnim;
+    internal int SpinNumber;
     internal int multiplyer1;
      internal int multiplyer2;
      internal int multiplyer3;
@@ -33,6 +34,7 @@ public class FreeSpinSelectButton : MonoBehaviour
         transform.localScale = originalScale;
 
         Index.text = index.ToString();
+        SpinNumber = index;
         multiplyer1 = m1;
         multiplyer2 = m2;
         multiplyer3 = m3;

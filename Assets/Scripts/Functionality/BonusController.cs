@@ -30,6 +30,7 @@ public class BonusController : MonoBehaviour
     [SerializeField] private ImageAnimation YellowPlarticle;
 
     private int NoOFBanneropen;
+    private Coroutine BonusCoroutine;
 
     [Header("Movable Sun")]
     [SerializeField] private Image MovableSun;
@@ -78,6 +79,7 @@ public class BonusController : MonoBehaviour
     internal IEnumerator BonusStartupPage(int spinCount)
     {
         FireLinkFeatureStartupPage.SetActive(true);
+        FireLinkFeatureStartButton.interactable = true;
         uiManager.OpenPopup(uiManager.BonusPopup);
         yield return new WaitForSeconds(2f);
         if (StartBonusRoutine != null)
@@ -87,12 +89,14 @@ public class BonusController : MonoBehaviour
         }
         else
         {
+            FireLinkFeatureStartButton.interactable = false;
             StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
         }
     }
     private void OnBonusStartClicked()
     {
-        if(StartBonusRoutine != null)
+        FireLinkFeatureStartButton.interactable = false;
+        if (StartBonusRoutine != null)
         {
             StopCoroutine(StartBonusRoutine);
             StartBonusRoutine = null;
@@ -248,6 +252,7 @@ public class BonusController : MonoBehaviour
             FreespinTextObj.SetActive(true);
         }
         yield return new WaitForSeconds(2f);
+      //  slotBehaviour.CheckWinPopups();
         slotBehaviour.CheckPopups = false;
     }
 
@@ -290,7 +295,10 @@ public class BonusController : MonoBehaviour
             foreach (var slot in res.ResultSlots)
             {
                 slot.InitializeTweening(slot.Slot.transform);
-                yield return new WaitForSeconds(0.05f);
+                if (slot.isFixed == false)
+                {
+                    yield return new WaitForSeconds(0.05f);
+                }
             }
         }
     }
@@ -313,9 +321,12 @@ public class BonusController : MonoBehaviour
             for (int k = 0; k < res.ResultSlots.Length; k++)
             {
                 res.ResultSlots[k].StopTweening();
-                yield return new WaitForSeconds(0.05f);
+                if (res.ResultSlots[k].isFixed == false)
+                {
+                    yield return new WaitForSeconds(0.05f);
+                }
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
 
         for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)

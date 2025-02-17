@@ -319,8 +319,8 @@ public class SlotBehaviour : MonoBehaviour
     {
         if (!IsFreeSpin)
         {
-            if (SocketManager.resultData.freeSpins.count >= 0) FSnum_text.text = SocketManager.resultData.freeSpins.count.ToString();
             if (FSBoard_Object) FSBoard_Object.SetActive(true);
+            if (SocketManager.resultData.freeSpins.count >= 0) FSnum_text.text = uiManager.FreeSpinOptionButton[priviousButtonIndex].SpinNumber.ToString();
             IsFreeSpin = true;
             ToggleButtonGrp(false);
 
@@ -336,13 +336,14 @@ public class SlotBehaviour : MonoBehaviour
     private IEnumerator FreeSpinCoroutine(int spinchances)
     {
         int i = 0;
-        while (SocketManager.resultData.freeSpins.count >= 0)
+        while (SocketManager.resultData.freeSpins.count > 0)
         {
             uiManager.FreeSpins--;
-            if (SocketManager.resultData.freeSpins.count>=0) FSnum_text.text = SocketManager.resultData.freeSpins.count.ToString();
+            
             StartSlots();
             yield return tweenroutine;
             yield return new WaitForSeconds(SpinDelay);
+            if (SocketManager.resultData.freeSpins.count>=0) FSnum_text.text = SocketManager.resultData.freeSpins.count.ToString();
             i++;
         }
 
@@ -658,6 +659,7 @@ public class SlotBehaviour : MonoBehaviour
         IsSpinning = true;
         RestoreObjectsToOriginalParents();
         ToggleButtonGrp(false);
+
         TempList.Clear();
         TempList.TrimExcess();
 
@@ -674,7 +676,9 @@ public class SlotBehaviour : MonoBehaviour
         {
             BalanceDeduction();
         }
-        
+
+       
+
         SocketManager.AccumulateResult(BetCounter);
         yield return new WaitUntil(() => SocketManager.isResultdone);
 
@@ -768,7 +772,6 @@ public class SlotBehaviour : MonoBehaviour
         }
         else
         {
-           
             CheckWinPopups();
             
         }
@@ -1023,7 +1026,7 @@ public class SlotBehaviour : MonoBehaviour
             priviousButtonIndex = x;
         }
         yield return (SocketManager.isResultdone);
-            uiManager.StartFirstFreeSpin((int)SocketManager.resultData.freeSpins.count, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer1, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer2, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer3);
+            uiManager.StartFirstFreeSpin(uiManager.FreeSpinOptionButton[priviousButtonIndex].SpinNumber, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer1, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer2, uiManager.FreeSpinOptionButton[priviousButtonIndex].multiplyer3);
     }
 
 
@@ -1038,6 +1041,13 @@ public class SlotBehaviour : MonoBehaviour
     {
         if (SlotStart_Button) SlotStart_Button.interactable = toggle;
         if (Mobile_SlotStart_Button) Mobile_SlotStart_Button.interactable = toggle;
+        //if (P_AutoSpinStop_Button) P_AutoSpinStop_Button.interactable = toggle;
+        //if (Mobile_StopSpin_Button) Mobile_StopSpin_Button.interactable = toggle;
+       // if (StopSpin_Button) StopSpin_Button.interactable = toggle;
+        //if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.interactable = toggle;
+
+
+
 
         if (MaxBet_Button) MaxBet_Button.interactable = toggle;
         if (AutoSpin_Button) AutoSpin_Button.interactable = toggle;
@@ -1098,7 +1108,7 @@ public class SlotBehaviour : MonoBehaviour
         alltweens[index].Kill();
         int tweenpos = (reqpos * IconSizeFactor) - IconSizeFactor;
         slotTransform.localPosition = new Vector2(slotTransform.localPosition.x, -100);
-        alltweens[index] = slotTransform.DOLocalMoveY(-tweenpos +260f, 0.3f).SetEase(Ease.OutQuad);
+        alltweens[index] = slotTransform.DOLocalMoveY(-tweenpos +250f, 0.3f).SetEase(Ease.OutQuad);
         audioController.PlayWLAudio("spinStop");
         if (!isStop){
             yield return new WaitForSeconds(0.2f);
