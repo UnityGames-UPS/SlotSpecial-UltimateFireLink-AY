@@ -708,6 +708,7 @@ public class UIManager : MonoBehaviour
 
     private void ToggleMusic()
     {
+        if (audioController) audioController.PlayButtonAudio();
         if (isMusic)
         {
         isMusic = false;
@@ -735,7 +736,7 @@ public class UIManager : MonoBehaviour
 
     private void ToggleSound()
     {
-        
+        if (audioController) audioController.PlayButtonAudio();
         if (isSound)
         {
             isSound = false;
