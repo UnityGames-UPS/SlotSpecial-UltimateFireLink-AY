@@ -563,7 +563,7 @@ public class UIManager : MonoBehaviour
             if (Win_Text) Win_Text.text = initAmount.ToString("F3");
         });
 
-        ClosePopupTween = DOVirtual.DelayedCall(6f, () =>
+        ClosePopupTween = DOVirtual.DelayedCall(3f, () =>
         {
             ClosePopup(WinPopup_Object);
             slotManager.CheckPopups = false;
@@ -594,20 +594,57 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < SymbolsText.Length; i++)
         {
-            string text = null;
-            if (paylines.symbols[i].Multiplier[0][0] != 0)
+            if(i ==0)
             {
-                text += "5x - " + paylines.symbols[i].Multiplier[0][0]+"x";
+                string text = null;
+                if (paylines.symbols[0].Multiplier[0][0] != 0)
+                {
+                    text += "5x - " + paylines.symbols[0].Multiplier[0][0] + "x";
+                }
+                if (paylines.symbols[0].Multiplier[1][0] != 0)
+                {
+                    text += "\n4x - " + paylines.symbols[0].Multiplier[1][0] + "x";
+                }
+                if (paylines.symbols[0].Multiplier[2][0] != 0)
+                {
+                    text += "\n3x - " + paylines.symbols[0].Multiplier[2][0] + "x";
+                }
+                if (SymbolsText[i]) SymbolsText[i].text = text;
             }
-            if (paylines.symbols[i].Multiplier[1][0] != 0)
+            if (i >= 4)
             {
-                text += "\n4x - " + paylines.symbols[i].Multiplier[1][0]+"x";
+                string text = null;
+                if (paylines.symbols[0].Multiplier[0][0] != 0)
+                {
+                    text += "5x - " + paylines.symbols[0].Multiplier[0][0] + "x";
+                }
+                if (paylines.symbols[0].Multiplier[1][0] != 0)
+                {
+                    text += "\n4x - " + paylines.symbols[0].Multiplier[1][0] + "x";
+                }
+                if (paylines.symbols[0].Multiplier[2][0] != 0)
+                {
+                    text += "\n3x - " + paylines.symbols[0].Multiplier[2][0] + "x";
+                }
+                if (SymbolsText[i]) SymbolsText[i].text = text;
             }
-            if (paylines.symbols[i].Multiplier[2][0] != 0)
+            else
             {
-                text += "\n3x - " + paylines.symbols[i].Multiplier[2][0]+"x";
+                string text = null;
+                if (paylines.symbols[7].Multiplier[0][0] != 0)
+                {
+                    text += "5x - " + paylines.symbols[7].Multiplier[0][0] + "x";
+                }
+                if (paylines.symbols[7].Multiplier[1][0] != 0)
+                {
+                    text += "\n4x - " + paylines.symbols[7].Multiplier[1][0] + "x";
+                }
+                if (paylines.symbols[7].Multiplier[2][0] != 0)
+                {
+                    text += "\n3x - " + paylines.symbols[7].Multiplier[2][0] + "x";
+                }
+                if (SymbolsText[i]) SymbolsText[i].text = text;
             }
-            if (SymbolsText[i]) SymbolsText[i].text = text;
         }
 
         FreeSpin_Text.text = "3 scattered                     on reels 2, 3, and 4 pays 2x the total bet and awards selection of one of the following: \n\n " +

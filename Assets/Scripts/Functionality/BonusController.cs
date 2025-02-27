@@ -121,31 +121,32 @@ public class BonusController : MonoBehaviour
 
     IEnumerator ChangeBannnerText(int ScatterCount)
     {
+        int rowOpen = CheckNoOfRow();
+        int index = 0;
+        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        {
+            if ((int)socketManager.initialData.bonusTrigger[i].rows == rowOpen)
+            {
+                index = i;
+            }
+        }
         
+        for (int i = Rowbannertext.Length - 1; i >= 0; i--)
+        {
+            if(socketManager.initialData.bonusTrigger[i+1].count[0]-ScatterCount > 0)
+            {
+                Rowbannertext[Rowbannertext.Length-i-1].text =(socketManager.initialData.bonusTrigger[i+1].count[0] - ScatterCount).ToString();
+            }
+            else
+            {
+                Rowbannertext[Rowbannertext.Length - i-1].text = "0";
+            }
+        }
             for (int i = Rowbannertext.Length-1; i >= 0; i--)
             {
-                Rowbannertext[i].text = (8 - ScatterCount + 4*(3-i)).ToString();
-            if (8 - ScatterCount + 4 * (3 - i) <= 0)
+               
+            if (8 - CheckNoOfRow()<=i)
             {
-                //if (4 - (8 - CheckNoOfRow()) > NoOFBanneropen)
-                //{
-                //    NoOFBanneropen = 4 - (8 - CheckNoOfRow());
-                //    Rowbannertext[i].text = "0";
-                //    RowbannerAnim[i].gameObject.SetActive(true);
-
-                //    RowbannerAnim[i].StopAnimation();
-
-                //    RowbannerAnim[i].StartAnimation();
-                //    if (audioManager) audioManager.PlayWLAudio("fireBlast");
-                //    yield return new WaitForSeconds(1f);
-                //    audioManager.StopWLAaudio();
-                //    Rowbanner[i].SetActive(false);
-                //    RowbannerAnim[i].gameObject.SetActive(false);
-                //}
-            }
-            if (8 - ScatterCount + 4 * (3 - i) <= 0)
-            {
-                
                 Rowbannertext[i].text = "0";
                 RowbannerAnim[i].gameObject.SetActive(true);
 
@@ -160,6 +161,24 @@ public class BonusController : MonoBehaviour
                 audioManager.StopWLAaudio();
                 Rowbanner[i].SetActive(false);
                 RowbannerAnim[i].gameObject.SetActive(false);
+            }
+            if (8 - ScatterCount + 4 * (3 - i) <= 0)
+            {
+                
+                //Rowbannertext[i].text = "0";
+                //RowbannerAnim[i].gameObject.SetActive(true);
+
+                //RowbannerAnim[i].StopAnimation();
+
+                //RowbannerAnim[i].StartAnimation();
+                //if (Rowbanner[i].gameObject.activeInHierarchy)
+                //{
+                //    if (audioManager) audioManager.PlayWLAudio("fireBlast");
+                //}
+                //yield return new WaitForSeconds(1f);
+                //audioManager.StopWLAaudio();
+                //Rowbanner[i].SetActive(false);
+                //RowbannerAnim[i].gameObject.SetActive(false);
 
             }
             Transform obj = Rowbanner[i].transform.GetChild(1).GetChild(1);
@@ -221,19 +240,20 @@ public class BonusController : MonoBehaviour
 
     private int CheckNoOfRow()
     {
-        int x= socketManager.resultData.bonus.matrix.Count;
-        //for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
-        //{
-        //    if(socketManager.resultData.scatterValues.Count>=socketManager.initialData.bonusTrigger[i].count[0] && socketManager.resultData.scatterValues.Count <= socketManager.initialData.bonusTrigger[i].count[1])
-        //    {
-        //        x= (int)socketManager.initialData.bonusTrigger[i].rows;
-        //        break;
-        //    }
-        //    else
-        //    {
-        //        x= 4;
-        //    }
-        //}
+        // int x= socketManager.resultData.bonus.matrix.Count;
+        int x = 0;
+        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        {
+            if (socketManager.resultData.scatterValues.Count >= socketManager.initialData.bonusTrigger[i].count[0] && socketManager.resultData.scatterValues.Count <= socketManager.initialData.bonusTrigger[i].count[1])
+            {
+                x = (int)socketManager.initialData.bonusTrigger[i].rows;
+                break;
+            }
+            else
+            {
+                x = 4;
+            }
+        }
         return x;
     }
     IEnumerator PlaySlideChangeTransitionAnimation(int SpinCount)
