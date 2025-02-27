@@ -44,7 +44,7 @@ public class FreeSpinSelectButton : MonoBehaviour
 
     internal void OnButtonClicked()
     {
-       
+        transform.localScale = originalScale;
         SelectEffectImg.gameObject.SetActive(true);
 
         originalScale = transform.localScale;

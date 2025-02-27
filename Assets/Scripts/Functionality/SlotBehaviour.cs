@@ -811,6 +811,7 @@ public class SlotBehaviour : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
         }
+        
         if (!IsAutoSpin && !IsFreeSpin)
         {
             ToggleButtonGrp(true);
@@ -857,21 +858,22 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CheckWinPopups()
     {
-        if (SocketManager.resultData.WinAmout >= currentTotalBet * 10 && SocketManager.resultData.WinAmout < currentTotalBet * 15)
+        Debug.Log("dev_test" + SocketManager.playerdata.currentWining+ "   0   " + currentTotalBet);
+        if (SocketManager.playerdata.currentWining >= currentTotalBet * 10 )
         {
-            uiManager.PopulateWin(1, SocketManager.resultData.WinAmout);
+            uiManager.PopulateWin(1,SocketManager.playerdata.currentWining);
             Debug.Log("dev_test" + "0");
         }
-        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 15 && SocketManager.resultData.WinAmout < currentTotalBet * 20)
-        {
-            uiManager.PopulateWin(2, SocketManager.resultData.WinAmout);
-            Debug.Log("dev_test" + "1");
-        }
-        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
-        {
-            uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
-            Debug.Log("dev_test" + "2");
-        }
+        //else if (SocketManager.resultData.WinAmout >= currentTotalBet * 15 &&SocketManager.playerdata.currentWining < currentTotalBet * 20)
+        //{
+        //    uiManager.PopulateWin(2,SocketManager.playerdata.currentWining);
+        //    Debug.Log("dev_test" + "1");
+        //}
+        //else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
+        //{
+        //    uiManager.PopulateWin(3,SocketManager.playerdata.currentWining);
+        //    Debug.Log("dev_test" + "2");
+        //}
         else
         {
             CheckPopups = false;
