@@ -81,14 +81,19 @@ public class BonusController : MonoBehaviour
         FireLinkFeatureStartupPage.SetActive(true);
         FireLinkFeatureStartButton.interactable = true;
         uiManager.OpenPopup(uiManager.BonusPopup);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
+        Debug.Log("dev_test" + "3" + slotBehaviour.WasAutoSpinOn);
         if (StartBonusRoutine != null)
         {
+            Debug.Log("dev_test" + "4");
+          
             StopCoroutine(StartBonusRoutine);
             StartBonusRoutine = null;
         }
-        else
+        if(slotBehaviour.WasAutoSpinOn)
         {
+            Debug.Log("dev_test" + "5");
+
             FireLinkFeatureStartButton.interactable = false;
             StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
         }

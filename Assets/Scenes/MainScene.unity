@@ -11010,7 +11010,7 @@ MonoBehaviour:
   uiManager: {fileID: 377874625}
   bonusdata: []
   _jsManager: {fileID: 500036493}
-  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjU1MTA1MGJjMDc4ODcyMWUxYmEwMSIsInVzZXJuYW1lIjoiZGV2MDEiLCJyb2xlIjoicGxheWVyIiwiaWF0IjoxNzQwNjUwMTI3LCJleHAiOjE3NDEyNTQ5Mjd9.vGykdc2Wjq-IpabmB4QL0D4Q3w5d_fJ9OcJ2LYlzHT0
+  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjU1MTA1MGJjMDc4ODcyMWUxYmEwMSIsInVzZXJuYW1lIjoiZGV2MDEiLCJyb2xlIjoicGxheWVyIiwiaWF0IjoxNzQwNjU1NzIwLCJleHAiOjE3NDEyNjA1MjB9.IOSE_unufsL8BkR5S8nP3cEm1a1QDby__eQygK_BYmc
 --- !u!114 &500036493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23661,7 +23661,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -383568228, guid: ef04736e59059419aa98a8283ee0812e, type: 3}
+  m_Sprite: {fileID: -334566242, guid: f5fa9f2564c8f4d1f9f52c6bf8408559, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -48588,7 +48588,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987702620}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f3cdb2432f1242ab9ba58e3264daa2f, type: 3}
   m_Name: 
@@ -48657,7 +48657,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -383568228, guid: ef04736e59059419aa98a8283ee0812e, type: 3}
+  m_Sprite: {fileID: -334566242, guid: f5fa9f2564c8f4d1f9f52c6bf8408559, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
