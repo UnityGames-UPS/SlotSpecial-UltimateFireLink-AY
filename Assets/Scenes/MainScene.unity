@@ -20582,7 +20582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTesting: 0
-  isPC: 1
+  isPC: 0
   canvasOP: {fileID: 51930702}
   Uimanager: {fileID: 377874625}
   slotManager: {fileID: 2046803210}

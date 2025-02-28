@@ -502,15 +502,14 @@ public class UIManager : MonoBehaviour
         OpenPopup(BonusPopup);
         FreeSpinStartupPanel.SetActive(true);
         NoOFFreeSpins = spins;
-        Debug.Log("dev_test" + "3" + slotManager.WasAutoSpinOn);
+       
         if (slotManager.WasAutoSpinOn)
         {
 
             if (FreeSpinStartupPanel.activeInHierarchy)
             {
                 yield return new WaitForSeconds(1.5f);
-                Debug.Log("dev_test" + "4");
-                Debug.Log("dev_test" + "5");
+                
                 ClosePopup(BonusPopup);
                 FreeSpinStartupPanel.SetActive(false);
                 StartFreeSpins(spins);

@@ -260,6 +260,7 @@ public class SlotBehaviour : MonoBehaviour
         {
 
             IsAutoSpin = true;
+            WasAutoSpinOn = true;
             if (P_AutoSpinStop_Button) P_AutoSpinStop_Button.gameObject.SetActive(true);
             if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.gameObject.SetActive(true);
             if (AutoSpin_Button) AutoSpin_Button.gameObject.SetActive(false);
