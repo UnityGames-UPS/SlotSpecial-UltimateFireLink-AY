@@ -502,20 +502,30 @@ public class UIManager : MonoBehaviour
         OpenPopup(BonusPopup);
         FreeSpinStartupPanel.SetActive(true);
         NoOFFreeSpins = spins;
-        if(slotManager.WasAutoSpinOn)
+        Debug.Log("dev_test" + "3" + slotManager.WasAutoSpinOn);
+        if (slotManager.WasAutoSpinOn)
         {
-            yield return new WaitForSeconds(2f);
-            ClosePopup(BonusPopup);
-            FreeSpinStartupPanel.SetActive(false);
-            StartFreeSpins(spins);
+
+            if (FreeSpinStartupPanel.activeInHierarchy)
+            {
+                yield return new WaitForSeconds(1.5f);
+                Debug.Log("dev_test" + "4");
+                Debug.Log("dev_test" + "5");
+                ClosePopup(BonusPopup);
+                FreeSpinStartupPanel.SetActive(false);
+                StartFreeSpins(spins);
+            }
         }
     }
 
     private void OnClickStartFreeSpinBtn()
     {
-        ClosePopup(BonusPopup);
-        FreeSpinStartupPanel.SetActive(false);
-        StartFreeSpins(NoOFFreeSpins);
+        if (FreeSpinStartupPanel.activeInHierarchy)
+        {
+            ClosePopup(BonusPopup);
+            FreeSpinStartupPanel.SetActive(false);
+            StartFreeSpins(NoOFFreeSpins);
+        }
     }
     internal void StartFirstFreeSpin(int spins, int m1, int m2, int m3)
     {

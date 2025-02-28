@@ -192,9 +192,9 @@ public class SlotBehaviour : MonoBehaviour
         if (Mobile_Turbo_Button) Mobile_Turbo_Button.onClick.AddListener(TurboToggle);
 
         if (P_AutoSpinStop_Button) P_AutoSpinStop_Button.onClick.RemoveAllListeners();
-        if (P_AutoSpinStop_Button) P_AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
+        if (P_AutoSpinStop_Button) P_AutoSpinStop_Button.onClick.AddListener(() => { StopAutoSpin(); WasAutoSpinOn = false; });
         if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.onClick.RemoveAllListeners();
-        if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
+        if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.onClick.AddListener(() => { StopAutoSpin(); WasAutoSpinOn = false; });
 
         if (FSBoard_Object) FSBoard_Object.SetActive(false);
 
@@ -303,6 +303,7 @@ public class SlotBehaviour : MonoBehaviour
     {
         yield return new WaitUntil(() => !IsSpinning);
         ToggleButtonGrp(true);
+       // WasAutoSpinOn = false;
         if (AutoSpinRoutine != null || tweenroutine != null)
         {
             StopCoroutine(AutoSpinRoutine);
@@ -772,7 +773,14 @@ public class SlotBehaviour : MonoBehaviour
         }
         else
         {
-            CheckWinPopups();
+            if (!IsFreeSpin)
+            {
+                CheckWinPopups();
+            }
+            else
+            {
+                CheckPopups = false;
+            }
             
         }
        
@@ -858,11 +866,11 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CheckWinPopups()
     {
-        Debug.Log("dev_test" + SocketManager.playerdata.currentWining+ "   0   " + currentTotalBet);
+      //  Debug.Log("dev_test" + SocketManager.playerdata.currentWining+ "   0   " + currentTotalBet);
         if (SocketManager.playerdata.currentWining >= currentTotalBet * 10 )
         {
             uiManager.PopulateWin(1,SocketManager.playerdata.currentWining);
-            Debug.Log("dev_test" + "0");
+            //Debug.Log("dev_test" + "0");
         }
         //else if (SocketManager.resultData.WinAmout >= currentTotalBet * 15 &&SocketManager.playerdata.currentWining < currentTotalBet * 20)
         //{
@@ -877,7 +885,7 @@ public class SlotBehaviour : MonoBehaviour
         else
         {
             CheckPopups = false;
-            Debug.Log("dev_test" + "3");
+           
         }
     }
 
