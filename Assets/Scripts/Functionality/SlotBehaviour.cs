@@ -159,6 +159,7 @@ public class SlotBehaviour : MonoBehaviour
     internal bool WasAutoSpinOn;
     internal bool IsHoldSpin = false;
     private int priviousButtonIndex;
+    private Coroutine LogoAnim;
 
     private void Start()
     {
@@ -646,6 +647,11 @@ public class SlotBehaviour : MonoBehaviour
     //manage the Routine for spinning of the slots
     private IEnumerator TweenRoutine()
     {
+        if (LogoAnim != null)
+        {
+            StopCoroutine(LogoAnim);
+            LogoAnim = null;
+        }
         if (currentBalance < currentTotalBet && !IsFreeSpin) 
         {
             CompareBalance();
@@ -654,6 +660,7 @@ public class SlotBehaviour : MonoBehaviour
             ToggleButtonGrp(true);
             yield break;
         }
+        
         if (TotalWin_text) TotalWin_text.text = "0.000";
         // if (audioController) audioController.PlayWLAudio("spin");
         CheckSpinAudio = true;
@@ -753,7 +760,7 @@ public class SlotBehaviour : MonoBehaviour
         else
         {
 
-            StartCoroutine( CheckPayoutLineBackend( SocketManager.resultData.symbolsToEmit));
+            LogoAnim = StartCoroutine( CheckPayoutLineBackend( SocketManager.resultData.symbolsToEmit));
         }
 
         CheckPopups = true;
@@ -971,8 +978,8 @@ public class SlotBehaviour : MonoBehaviour
     {
         
         List<int> points_anim = null;
-      //  List<int> scatter_anim = null;
-        
+        //  List<int> scatter_anim = null;
+        Debug.Log("Dev_Test: "+Newtonsoft.Json.JsonConvert.SerializeObject(points_AnimString));
         if ( points_AnimString.Count > 0)
         {
 
