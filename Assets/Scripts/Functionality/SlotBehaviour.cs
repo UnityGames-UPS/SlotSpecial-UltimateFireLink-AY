@@ -838,7 +838,7 @@ public class SlotBehaviour : MonoBehaviour
             
             IsSpinning = false;
         }
-
+        
     }
 
     private void BalanceDeduction()

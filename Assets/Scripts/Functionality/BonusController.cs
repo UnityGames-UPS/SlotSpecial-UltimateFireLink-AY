@@ -48,6 +48,7 @@ public class BonusController : MonoBehaviour
     [Header("Slots")]
     [SerializeField] private GameObject NormalSlot;
     [SerializeField] private GameObject BonusSlot;
+    [SerializeField] private GameObject UFLTitleMobile;
 
     private void Start()
     {
@@ -97,6 +98,7 @@ public class BonusController : MonoBehaviour
             FireLinkFeatureStartButton.interactable = false;
             StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
         }
+        UFLTitleMobile.SetActive(false);
     }
     private void OnBonusStartClicked()
     {
@@ -276,6 +278,7 @@ public class BonusController : MonoBehaviour
         {
             FreespinTextObj.SetActive(true);
         }
+        UFLTitleMobile.SetActive(true);
         yield return new WaitForSeconds(2f);
       //  slotBehaviour.CheckWinPopups();
         slotBehaviour.CheckPopups = false;
@@ -403,6 +406,7 @@ public class BonusController : MonoBehaviour
                 }
             }
         }
+        if (slotBehaviour.Balance_text) slotBehaviour.Balance_text.text = socketManager.playerdata.Balance.ToString("F3");
     }
 
     private void UpdateCurrentWin(double winAmount)
