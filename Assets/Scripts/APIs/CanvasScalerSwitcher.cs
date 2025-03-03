@@ -9,6 +9,7 @@ public class CanvasScalerSwitcher : MonoBehaviour
     [Header("For Testing in unity")]
     public bool isTesting = false;
     public bool isPC = true;
+    public bool isApple = false;
 
 
 
@@ -22,6 +23,13 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
     [SerializeField]
     private SlotBehaviour slotManager;
+
+    [Header("UI Change For Apple")]
+
+    [SerializeField] private GameObject MobileTopBar;
+    [SerializeField] private GameObject MobileBottomBar;
+    [SerializeField] private GameObject MobileMajorMiniMinor;
+    [SerializeField] private GameObject BonusCountUI;
 
     [Header("BG Change")]
     [SerializeField] private Sprite LandscapeBG;
@@ -71,7 +79,14 @@ public class CanvasScalerSwitcher : MonoBehaviour
         if (isTesting)
         {
             if (isPC) AssignValuesForPC();
-            else AssignValuesForMobile();
+            else
+            {
+                AssignValuesForMobile();
+                if(isApple)
+                {
+                    AssignValuseForApple();
+                }
+            }
         }
 #if UNITY_WEBGL && !UNITY_EDITOR
         // Calls the JavaScript function 'isMobile()' from Unity
@@ -94,12 +109,34 @@ public class CanvasScalerSwitcher : MonoBehaviour
             AssignValuesForMobile();
             Debug.Log("Dev_Test:"+"This is a mobile device.-----------------------------------------");
         }
+        else if(s == "I")
+        {
+            AssignValuesForMobile();
+            AssignValuseForApple();
+            Debug.Log("Dev_Test:" + "This is a Apple device.-----------------------------------------");
+        }
         else
         {
            
             AssignValuesForPC();
             Debug.Log("Dev_Test:" + "This is a PC device.--------------------------------------------");
         }
+        
+    }
+
+    private void AssignValuseForApple()
+    {
+        MainSlot.transform.localPosition = new Vector3(MainSlot.transform.localPosition.x, MainSlot.transform.localPosition.y + 100f, MainSlot.transform.localPosition.z);
+        BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
+       // SunHitPoint.transform.localPosition = new Vector3(SunHitPoint.transform.localPosition.x, SunHitPoint.transform.localPosition.y + 100f, SunHitPoint.transform.localPosition.z);
+        MobileBottomBar.transform.localPosition = new Vector3(MobileBottomBar.transform.localPosition.x, MobileBottomBar.transform.localPosition.y + 100f, MobileBottomBar.transform.localPosition.z);
+
+
+        MobileTopBar.transform.localPosition = new Vector3(MobileTopBar.transform.localPosition.x, MobileTopBar.transform.localPosition.y - 100f, MobileTopBar.transform.localPosition.z);
+        MobileMajorMiniMinor.transform.localPosition = new Vector3(MobileMajorMiniMinor.transform.localPosition.x, MobileMajorMiniMinor.transform.localPosition.y - 100f, MobileMajorMiniMinor.transform.localPosition.z);
+        BonusCountUI.transform.localPosition = new Vector3(BonusCountUI.transform.localPosition.x, BonusCountUI.transform.localPosition.y - 100f, BonusCountUI.transform.localPosition.z);
+
+
     }
 
     public void AssignValuesForPC()
