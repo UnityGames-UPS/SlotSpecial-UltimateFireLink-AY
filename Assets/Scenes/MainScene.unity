@@ -11011,7 +11011,7 @@ MonoBehaviour:
   uiManager: {fileID: 377874625}
   bonusdata: []
   _jsManager: {fileID: 500036493}
-  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWVkZDMzMzUzOTI1MjFmZWJmYjZiYSIsInVzZXJuYW1lIjoiTWVldCIsInJvbGUiOiJwbGF5ZXIiLCJpYXQiOjE3NDA3NDAxOTEsImV4cCI6MTc0MTM0NDk5MX0.N1Ty4-ZzWlAZILj8XHiZznw7BT-PIsZRIS8WERjM-bo
+  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTlkOGJmZWM1MWYwY2FmODRkNTY3NiIsInVzZXJuYW1lIjoidGVzdCIsInJvbGUiOiJwbGF5ZXIiLCJpYXQiOjE3NDE3NjEzOTgsImV4cCI6MTc0MjM2NjE5OH0.WOyudruTr7_HOWC_UZVeO7tP0s7X4x22_dAKPh4uAVc
 --- !u!114 &500036493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40467,6 +40467,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b6272960611c440b1a351f8e8c2a3e51, type: 3}
   - {fileID: 21300000, guid: 8bd97467599e84e8ea161b2b11ede2d3, type: 3}
   - {fileID: 21300000, guid: 86a7a1bdedf7b4c6c9aeb1fcffcdbf92, type: 3}
+  - {fileID: 21300000, guid: a23171f9dc53e438eb5da7e524a67999, type: 3}
   rendererDelegate: {fileID: 1676935777}
   useSharedMaterial: 1
   doLoopAnimation: 0
