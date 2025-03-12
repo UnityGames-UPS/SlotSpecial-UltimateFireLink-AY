@@ -91,12 +91,14 @@ public class BonusController : MonoBehaviour
             StopCoroutine(StartBonusRoutine);
             StartBonusRoutine = null;
         }
-        if(slotBehaviour.WasAutoSpinOn)
+        if(slotBehaviour.WasAutoSpinOn) 
         {
             Debug.Log("dev_test" + "5");
-
-            FireLinkFeatureStartButton.interactable = false;
-            StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
+            if (FireLinkFeatureStartButton.interactable)
+            {
+                FireLinkFeatureStartButton.interactable = false;
+                StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
+            }
         }
         UFLTitleMobile.SetActive(false);
     }
