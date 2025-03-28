@@ -1,166 +1,422 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 
+
+[System.Serializable]
+public class FireResultSlots
+{
+    [SerializeField] internal FireResultSlot[] ResultSlots;
+}
 public class BonusController : MonoBehaviour
 {
-    [SerializeField]
-    private Button Spin_Button;
-    [SerializeField]
-    private RectTransform Wheel_Transform;
-    [SerializeField]
-    private BoxCollider2D[] point_colliders;
-    [SerializeField]
-    private TMP_Text[] Bonus_Text;
-    [SerializeField]
-    private GameObject Bonus_Object;
-    [SerializeField]
-    private SlotBehaviour slotManager;
-    [SerializeField]
-    private AudioController _audioManager;
-    [SerializeField]
-    private GameObject PopupPanel;
-    [SerializeField]
-    private Transform Win_Transform;
-    [SerializeField]
-    private Transform Loose_Transform;
-    [SerializeField]
-    private SocketIOManager m_SocketManager;
 
-    internal bool isCollision = false;
+    [SerializeField] private SlotBehaviour slotBehaviour;
+    [SerializeField] private UIManager uiManager;
+    [SerializeField] private SocketIOManager socketManager;
+    [SerializeField] private AudioController audioManager;
+    [Header("FireLink Slot")]
+    [SerializeField] private FireResultSlots[] fireslot;
+    [SerializeField]
+    private GameObject[] Rowbanner;
+    [SerializeField]
+    private TMP_Text[] Rowbannertext;
+    [SerializeField]
+    private ImageAnimation[] RowbannerAnim;
+    [SerializeField] private TMP_Text RemainingSlotTxt;
+    [SerializeField] private ImageAnimation YellowPlarticle;
 
-    private Tween wheelRoutine;
+    private int NoOFBanneropen;
+    private Coroutine BonusCoroutine;
 
-    private float elasticIntensity = 5f;
+    [Header("Movable Sun")]
+    [SerializeField] private Image MovableSun;
+    [SerializeField] private TMP_Text MovableSunText;
+    [SerializeField] private Transform SunHitposition;
+    [SerializeField] private ImageAnimation SunBlastAnim;
+    [SerializeField] private double WinAmount;
 
-    private int stopIndex = 0;
+    [Header("Freespin")]
+    [SerializeField] private GameObject FreespinTextObj;
+    [SerializeField] private GameObject FireLinkFeatureStartupPage;
+    [SerializeField] private Button FireLinkFeatureStartButton;
+    private Coroutine StartBonusRoutine;
 
+    [Header("Slots")]
+    [SerializeField] private GameObject NormalSlot;
+    [SerializeField] private GameObject BonusSlot;
+    [SerializeField] private GameObject UFLTitleMobile;
 
     private void Start()
     {
-        if (Spin_Button) Spin_Button.onClick.RemoveAllListeners();
-        if (Spin_Button) Spin_Button.onClick.AddListener(Spinbutton);
-    }
+        if (FireLinkFeatureStartButton) FireLinkFeatureStartButton.onClick.RemoveAllListeners();
+        if (FireLinkFeatureStartButton) FireLinkFeatureStartButton.onClick.AddListener(OnBonusStartClicked);
 
-    internal void StartBonus(int stop)
-    {
-        ResetColliders();
-        if (PopupPanel) PopupPanel.SetActive(false);
-        if (Win_Transform) Win_Transform.gameObject.SetActive(false);
-        if (Loose_Transform) Loose_Transform.gameObject.SetActive(false);
-        if (_audioManager) _audioManager.SwitchBGSound(true);
-        PopulateWheel(m_SocketManager.bonusdata);
-        stopIndex = stop;
-        if (Bonus_Object) Bonus_Object.SetActive(true);
-        if (Spin_Button) Spin_Button.interactable = true;
-
-        if (slotManager.IsAutoSpin || slotManager.IsFreeSpin)
+        foreach (var res in fireslot)
         {
-            Spin_Button.gameObject.SetActive(false);
-            DOVirtual.DelayedCall(1f, () => {
-                Spinbutton();
-            });
-        }
-        else
-        {
-            Spin_Button.gameObject.SetActive(true);
-        }
-    }
-
-    private void Spinbutton()
-    {
-        isCollision = false;
-        if (Spin_Button) Spin_Button.interactable = false;
-        RotateWheel();
-        DOVirtual.DelayedCall(1.5f, () =>
-        {
-            TurnCollider(stopIndex);
-        });
-    }
-
-    internal void PopulateWheel(List<string> bonusdata)
-    {
-        for (int i = 0; i < bonusdata.Count; i++)
-        {
-            if (bonusdata[i] == "-1") 
+            for (int i = 0; i < res.ResultSlots.Length; i++)
             {
-                if (Bonus_Text[i]) Bonus_Text[i].text = "NO \nBONUS";
+                res.ResultSlots[i].ShowRandomeResult(slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)], slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)], slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)]);
+                int x = Random.Range(0, slotBehaviour.myImages.Length - 6);
+                int y = Random.Range(0, slotBehaviour.myImages.Length - 6);
+                int z = Random.Range(0, slotBehaviour.myImages.Length - 6);
+                int q = Random.Range(0, slotBehaviour.myImages.Length - 6);
+                int p = Random.Range(0, slotBehaviour.myImages.Length - 6);
+
+
+                res.ResultSlots[i].SetRandomeImages(slotBehaviour.myImages[x], slotBehaviour.myImages[y], slotBehaviour.myImages[z], slotBehaviour.myImages[q], slotBehaviour.myImages[p]);
+            }
+            
+        }
+
+        //StartCoroutine(TestStart());
+       
+        //    StartCoroutine(testStop());
+    }
+
+    internal IEnumerator BonusStartupPage(int spinCount)
+    {
+        FireLinkFeatureStartupPage.SetActive(true);
+        FireLinkFeatureStartButton.interactable = true;
+        uiManager.OpenPopup(uiManager.BonusPopup);
+        yield return new WaitForSeconds(1.5f);
+        Debug.Log("dev_test" + "3" + slotBehaviour.WasAutoSpinOn);
+        if (StartBonusRoutine != null)
+        {
+            Debug.Log("dev_test" + "4");
+          
+            StopCoroutine(StartBonusRoutine);
+            StartBonusRoutine = null;
+        }
+        if(slotBehaviour.WasAutoSpinOn) 
+        {
+            Debug.Log("dev_test" + "5");
+            if (FireLinkFeatureStartButton.interactable)
+            {
+                FireLinkFeatureStartButton.interactable = false;
+                StartBonusRoutine = StartCoroutine(StartBonus(spinCount));
+            }
+        }
+        UFLTitleMobile.SetActive(false);
+    }
+    private void OnBonusStartClicked()
+    {
+        FireLinkFeatureStartButton.interactable = false;
+        if (StartBonusRoutine != null)
+        {
+            StopCoroutine(StartBonusRoutine);
+            StartBonusRoutine = null;
+        }
+        StartBonusRoutine = StartCoroutine(StartBonus(socketManager.resultData.bonus.spinCount));
+    }
+    internal IEnumerator StartBonus(int spinCount)
+    {
+        NoOFBanneropen = 0;
+       WinAmount = 0;
+        if (slotBehaviour.IsFreeSpin)
+        {
+            FreespinTextObj.SetActive(false);
+        }
+       
+        StartCoroutine(uiManager.SlideChangeAnimation(()=>changeSlide(true)));
+        SetinitialReel();
+        StartCoroutine(PlaySlideChangeTransitionAnimation(spinCount));
+       // StartCoroutine(BonusTweenRoutine(spinCount));
+        yield return null;
+    }
+
+    IEnumerator ChangeBannnerText(int ScatterCount)
+    {
+        int rowOpen = CheckNoOfRow();
+        int index = 0;
+        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        {
+            if ((int)socketManager.initialData.bonusTrigger[i].rows == rowOpen)
+            {
+                index = i;
+            }
+        }
+        
+        for (int i = Rowbannertext.Length - 1; i >= 0; i--)
+        {
+            if(socketManager.initialData.bonusTrigger[i+1].count[0]-ScatterCount > 0)
+            {
+                Rowbannertext[Rowbannertext.Length-i-1].text =(socketManager.initialData.bonusTrigger[i+1].count[0] - ScatterCount).ToString();
             }
             else
             {
-                if (Bonus_Text[i]) Bonus_Text[i].text = (double.Parse(bonusdata[i]) * m_SocketManager.initialData.Bets[slotManager.BetCounter]).ToString();
+                Rowbannertext[Rowbannertext.Length - i-1].text = "0";
+            }
+        }
+            for (int i = Rowbannertext.Length-1; i >= 0; i--)
+            {
+               
+            if (8 - CheckNoOfRow()<=i)
+            {
+                Rowbannertext[i].text = "0";
+                RowbannerAnim[i].gameObject.SetActive(true);
+
+                RowbannerAnim[i].StopAnimation();
+
+                RowbannerAnim[i].StartAnimation();
+                if (Rowbanner[i].gameObject.activeInHierarchy)
+                {
+                    if (audioManager) audioManager.PlayWLAudio("fireBlast");
+                }
+                yield return new WaitForSeconds(1f);
+                audioManager.StopWLAaudio();
+                Rowbanner[i].SetActive(false);
+                RowbannerAnim[i].gameObject.SetActive(false);
+            }
+            if (8 - ScatterCount + 4 * (3 - i) <= 0)
+            {
+                
+                //Rowbannertext[i].text = "0";
+                //RowbannerAnim[i].gameObject.SetActive(true);
+
+                //RowbannerAnim[i].StopAnimation();
+
+                //RowbannerAnim[i].StartAnimation();
+                //if (Rowbanner[i].gameObject.activeInHierarchy)
+                //{
+                //    if (audioManager) audioManager.PlayWLAudio("fireBlast");
+                //}
+                //yield return new WaitForSeconds(1f);
+                //audioManager.StopWLAaudio();
+                //Rowbanner[i].SetActive(false);
+                //RowbannerAnim[i].gameObject.SetActive(false);
+
+            }
+            Transform obj = Rowbanner[i].transform.GetChild(1).GetChild(1);
+            
+                obj.GetComponent<ImageAnimation>().StopAnimation();
+                obj.GetComponent<ImageAnimation>().StartAnimation();
+            }
+       
+    }
+
+    
+    private void changeSlide(bool isBonusTile)
+    {
+        FireLinkFeatureStartupPage.SetActive(false);
+        if (isBonusTile)
+        {
+            NormalSlot.SetActive(false);
+            BonusSlot.SetActive(true);
+        }
+        else          
+        {
+            NormalSlot.SetActive(true);
+            BonusSlot.SetActive(false);
+
+        }
+    }
+    private void SetinitialReel()
+    {
+        
+        foreach (var res in fireslot)
+        {
+            foreach (var slot in res.ResultSlots)
+            {
+                if (slot.isFixed)
+                {
+                    slot.isFixed = false;
+                    slot.ShowImage.transform.localScale /= 2f;
+                    slot.NumText.gameObject.SetActive(false);
+                    StartCoroutine(slot.ApplyFilter(true));
+                    slot.ShowRandomeResult(slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)], slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)], slotBehaviour.myImages[Random.Range(0, slotBehaviour.myImages.Length - 3)]);
+                }
                 
             }
         }
+        foreach(var obj in Rowbanner)
+        {
+            obj.SetActive(true);
+        }
+        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        {
+            fireslot[socketManager.resultData.scatterValues[i].index[0]+4].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isSlotFixed(true, socketManager.resultData.scatterValues[i].value,slotBehaviour.Sun_Sprite);
+            StartCoroutine(fireslot[socketManager.resultData.scatterValues[i].index[0] + 4].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].ApplyFilter(false));
+        }
+
+        SunBlastAnim.gameObject.SetActive(false);
+        slotBehaviour.TotalWin_text.text = WinAmount.ToString();
     }
 
-    private void RotateWheel()
+
+    private int CheckNoOfRow()
     {
-        if (Wheel_Transform) Wheel_Transform.localEulerAngles = new Vector3(0, 0, 359);
-        if (Wheel_Transform) wheelRoutine =  Wheel_Transform.DORotate(new Vector3(0, 0, 0), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-        _audioManager.PlayBonusAudio("cycleSpin");
+        // int x= socketManager.resultData.bonus.matrix.Count;
+        int x = 0;
+        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        {
+            if (socketManager.resultData.scatterValues.Count >= socketManager.initialData.bonusTrigger[i].count[0] && socketManager.resultData.scatterValues.Count <= socketManager.initialData.bonusTrigger[i].count[1])
+            {
+                x = (int)socketManager.initialData.bonusTrigger[i].rows;
+                break;
+            }
+            else
+            {
+                x = 4;
+            }
+        }
+        return x;
+    }
+    IEnumerator PlaySlideChangeTransitionAnimation(int SpinCount)
+    {
+        yield return (ChangeBannnerText(socketManager.resultData.bonus.scatterCount));
+
+        while (socketManager.resultData.bonus.spinCount >= 0)
+        {
+            yield return(BonusTweenRoutine(SpinCount));
+            SpinCount--;
+        }
+        yield return (MovableSunAnim());
+        StartCoroutine(uiManager.SlideChangeAnimation(() => changeSlide(false)));
+        if (slotBehaviour.IsFreeSpin)
+        {
+            FreespinTextObj.SetActive(true);
+        }
+        UFLTitleMobile.SetActive(true);
+        yield return new WaitForSeconds(2f);
+      //  slotBehaviour.CheckWinPopups();
+        slotBehaviour.CheckPopups = false;
     }
 
-    private void ResetColliders()
+
+    IEnumerator BonusTweenRoutine(int spinCount)
     {
-        foreach(BoxCollider2D col in point_colliders)
-        {
-            col.enabled = false;
-        }
+        ChangeRemainingSlotText();
+        yield return(ChangeBannnerText(socketManager.resultData.bonus.scatterCount));
+
+        yield return (InitiliseTweening());
+
+        socketManager.AccumulateResult(slotBehaviour.BetCounter);
+        
+        yield return new WaitUntil(() => socketManager.isResultdone);
+        
+        yield return (StopTweening());
+       
+       
+
+       // yield return new WaitForSeconds(2f);
+
     }
 
-    private void TurnCollider(int point)
+    private void ChangeRemainingSlotText()
     {
-        if (point_colliders[point]) point_colliders[point].enabled = true;
+        if (socketManager.resultData.bonus.spinCount >= int.Parse(RemainingSlotTxt.text))
+        {
+
+            YellowPlarticle.StopAnimation();
+            YellowPlarticle.StartAnimation();
+        }
+        if (socketManager.resultData.bonus.spinCount >= 0) RemainingSlotTxt.text = socketManager.resultData.bonus.spinCount.ToString();
+
+
+    }
+    IEnumerator InitiliseTweening()
+    {
+        foreach (var res in fireslot)
+        {
+            foreach (var slot in res.ResultSlots)
+            {
+                slot.InitializeTweening(slot.Slot.transform);
+                if (slot.isFixed == false)
+                {
+                    yield return new WaitForSeconds(0.05f);
+                }
+            }
+        }
+    }
+    IEnumerator StopTweening()
+    {
+        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        {
+             
+            if (fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed == false)
+            {
+                //Debug.Log("Scatter :x   :" + socketManager.resultData.scatterValues[i].index[0] + "  y:" + socketManager.resultData.scatterValues[i].index[1] +"      "+ (socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()) + "   check no of row" +CheckNoOfRow());
+                fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isSlotFixed(false, socketManager.resultData.scatterValues[i].value, slotBehaviour.Sun_Sprite);
+                StartCoroutine(fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].ApplyFilter(false));
+            }
+        }
+
+
+        foreach (var res in fireslot)
+        {
+            for (int k = 0; k < res.ResultSlots.Length; k++)
+            {
+                res.ResultSlots[k].StopTweening();
+                if (res.ResultSlots[k].isFixed == false)
+                {
+                    yield return new WaitForSeconds(0.05f);
+                }
+            }
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        {
+            if (fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed == false)
+            {               
+                fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed = true;
+                
+            }
+        }       
+    }
+    IEnumerator MovableSunAnim()
+    {
+        for (int i = 0; i < fireslot.Length; i++)
+        {
+            for (int j = 0; j <fireslot[i].ResultSlots.Length; j++)
+            {
+                if(fireslot[i].ResultSlots[j].isFixed == true)
+                {
+                    fireslot[i].ResultSlots[j].playFrameBurnAnimation();
+                   
+                    MovableSun.transform.position = fireslot[i].ResultSlots[j].transform.position;
+                    MovableSunText.text = fireslot[i].ResultSlots[j].NumText.text;
+                    //MovableSun.color = new Color(0, 0, 0, 0);
+                    MovableSun.gameObject.SetActive(true);
+                   // MovableSun.DOColor(new Color(1,1,1,1), 0.8f);
+                   if(slotBehaviour.IsTurboOn) yield return new WaitForSeconds(0.5f);
+                   else yield return new WaitForSeconds(0.8f);
+
+                    SunBlastAnim.StopAnimation();
+                    SunBlastAnim.gameObject.SetActive(false);
+                    
+                    MovableSun.GetComponent<ImageAnimation>().StartAnimation();
+                    audioManager.StopWLAaudio();
+                    if (audioManager) audioManager.PlayWLAudio("fireWhoose");
+                    float speed = 10;
+                    if (slotBehaviour.IsTurboOn)  speed = 20;
+                   
+
+                    Tween moveTween = MovableSun.transform.DOMove(SunHitposition.position, speed).SetSpeedBased(true).SetEase(Ease.Linear);
+                    yield return moveTween.WaitForCompletion();
+                    
+                    UpdateCurrentWin(double.Parse(MovableSunText.text));
+                    MovableSun.gameObject.SetActive(false);
+                    
+
+                    MovableSun.GetComponent<ImageAnimation>().StopAnimation();
+                    audioManager.StopWLAaudio();
+                }
+            }
+        }
+        if (slotBehaviour.Balance_text) slotBehaviour.Balance_text.text = socketManager.playerdata.Balance.ToString("F3");
     }
 
-    internal void StopWheel()
+    private void UpdateCurrentWin(double winAmount)
     {
-        if (wheelRoutine != null)
-        {
-            wheelRoutine.Pause(); // Pause the rotation
+        SunBlastAnim.gameObject.SetActive(true);
+        SunBlastAnim.StartAnimation();
 
-            // Apply an elastic effect to the paused rotation
-            Wheel_Transform.DORotate(Wheel_Transform.eulerAngles + Vector3.forward * Random.Range(-elasticIntensity, elasticIntensity), 1f)
-                .SetEase(Ease.OutElastic);
-        }
-        if (Bonus_Text[stopIndex].text.Equals("NO \nBONUS")) 
-        {
-            if (Loose_Transform) Loose_Transform.gameObject.SetActive(true);
-            if (Loose_Transform) Loose_Transform.localScale = Vector3.zero;
-            if (PopupPanel) PopupPanel.SetActive(true);
-            if (Loose_Transform) Loose_Transform.DOScale(Vector3.one, 1f);
-            PlayWinLooseSound(false);
-        }
-        else
-        {
-            if (Win_Transform) Win_Transform.gameObject.SetActive(true);
-            if (Win_Transform) Win_Transform.localScale = Vector3.zero;
-            if (PopupPanel) PopupPanel.SetActive(true);
-            if (Win_Transform) Win_Transform.DOScale(Vector3.one, 1f);
-            PlayWinLooseSound(true);
-        }
-        DOVirtual.DelayedCall(3f, () =>
-        {
-            ResetColliders();
-            if (_audioManager) _audioManager.SwitchBGSound(false);
-            if (Bonus_Object) Bonus_Object.SetActive(false);
-            slotManager.CheckWinPopups();
-        });
-    }
-
-    internal void PlayWinLooseSound(bool isWin)
-    {
-        if (isWin)
-        {
-            _audioManager.PlayBonusAudio("win");
-        }
-        else
-        {
-            _audioManager.PlayBonusAudio("lose");
-        }
+        WinAmount += winAmount;
+        slotBehaviour.TotalWin_text.text = WinAmount.ToString();
     }
 }
