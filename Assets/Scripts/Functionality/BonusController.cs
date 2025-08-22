@@ -110,7 +110,7 @@ public class BonusController : MonoBehaviour
             StopCoroutine(StartBonusRoutine);
             StartBonusRoutine = null;
         }
-        StartBonusRoutine = StartCoroutine(StartBonus(socketManager.resultData.bonus.spinCount));
+        StartBonusRoutine = StartCoroutine(StartBonus(socketManager.ResultData.features.bonus.spinCount));
     }
     internal IEnumerator StartBonus(int spinCount)
     {
@@ -132,9 +132,9 @@ public class BonusController : MonoBehaviour
     {
         int rowOpen = CheckNoOfRow();
         int index = 0;
-        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        for (int i = 0; i < socketManager.InitFeature.bonusTrigger.Count; i++)
         {
-            if ((int)socketManager.initialData.bonusTrigger[i].rows == rowOpen)
+            if ((int)socketManager.InitFeature.bonusTrigger[i].rows == rowOpen)
             {
                 index = i;
             }
@@ -142,9 +142,9 @@ public class BonusController : MonoBehaviour
         
         for (int i = Rowbannertext.Length - 1; i >= 0; i--)
         {
-            if(socketManager.initialData.bonusTrigger[i+1].count[0]-ScatterCount > 0)
+            if(socketManager.InitFeature.bonusTrigger[i+1].count[0]-ScatterCount > 0)
             {
-                Rowbannertext[Rowbannertext.Length-i-1].text =(socketManager.initialData.bonusTrigger[i+1].count[0] - ScatterCount).ToString();
+                Rowbannertext[Rowbannertext.Length-i-1].text =(socketManager.InitFeature.bonusTrigger[i+1].count[0] - ScatterCount).ToString();
             }
             else
             {
@@ -236,10 +236,10 @@ public class BonusController : MonoBehaviour
         {
             obj.SetActive(true);
         }
-        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        for (int i = 0; i < socketManager.ResultData.features.bonus.scatterValues.Count; i++)
         {
-            fireslot[socketManager.resultData.scatterValues[i].index[0]+4].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isSlotFixed(true, socketManager.resultData.scatterValues[i].value,slotBehaviour.Sun_Sprite);
-            StartCoroutine(fireslot[socketManager.resultData.scatterValues[i].index[0] + 4].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].ApplyFilter(false));
+            fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0]+4].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].isSlotFixed(true, socketManager.ResultData.features.bonus.scatterValues[i].value,slotBehaviour.Sun_Sprite);
+            StartCoroutine(fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 4].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].ApplyFilter(false));
         }
 
         SunBlastAnim.gameObject.SetActive(false);
@@ -249,13 +249,13 @@ public class BonusController : MonoBehaviour
 
     private int CheckNoOfRow()
     {
-        // int x= socketManager.resultData.bonus.matrix.Count;
+        // int x= socketManager.ResultData.features.bonus.bonus.matrix.Count;
         int x = 0;
-        for (int i = 0; i < socketManager.initialData.bonusTrigger.Count; i++)
+        for (int i = 0; i < socketManager.InitFeature.bonusTrigger.Count; i++)
         {
-            if (socketManager.resultData.scatterValues.Count >= socketManager.initialData.bonusTrigger[i].count[0] && socketManager.resultData.scatterValues.Count <= socketManager.initialData.bonusTrigger[i].count[1])
+            if (socketManager.ResultData.features.bonus.scatterValues.Count >= socketManager.InitFeature.bonusTrigger[i].count[0] && socketManager.ResultData.features.bonus.scatterValues.Count <= socketManager.InitFeature.bonusTrigger[i].count[1])
             {
-                x = (int)socketManager.initialData.bonusTrigger[i].rows;
+                x = (int)socketManager.InitFeature.bonusTrigger[i].rows;
                 break;
             }
             else
@@ -267,13 +267,16 @@ public class BonusController : MonoBehaviour
     }
     IEnumerator PlaySlideChangeTransitionAnimation(int SpinCount)
     {
-        yield return (ChangeBannnerText(socketManager.resultData.bonus.scatterCount));
+        yield return (ChangeBannnerText(socketManager.ResultData.features.bonus.scatterCount));
 
-        while (socketManager.resultData.bonus.spinCount >= 0)
+        while (socketManager.ResultData.features.bonus.spinCount > 0)
         {
             yield return(BonusTweenRoutine(SpinCount));
             SpinCount--;
         }
+
+        RemainingSlotTxt.text = "0";
+
         yield return (MovableSunAnim());
         StartCoroutine(uiManager.SlideChangeAnimation(() => changeSlide(false)));
         if (slotBehaviour.IsFreeSpin)
@@ -290,11 +293,11 @@ public class BonusController : MonoBehaviour
     IEnumerator BonusTweenRoutine(int spinCount)
     {
         ChangeRemainingSlotText();
-        yield return(ChangeBannnerText(socketManager.resultData.bonus.scatterCount));
+        yield return(ChangeBannnerText(socketManager.ResultData.features.bonus.scatterCount));
 
         yield return (InitiliseTweening());
 
-        socketManager.AccumulateResult(slotBehaviour.BetCounter);
+        socketManager.AccumulateResult("SPIN");
         
         yield return new WaitUntil(() => socketManager.isResultdone);
         
@@ -308,13 +311,13 @@ public class BonusController : MonoBehaviour
 
     private void ChangeRemainingSlotText()
     {
-        if (socketManager.resultData.bonus.spinCount >= int.Parse(RemainingSlotTxt.text))
+        if (socketManager.ResultData.features.bonus.spinCount >= int.Parse(RemainingSlotTxt.text))
         {
 
             YellowPlarticle.StopAnimation();
             YellowPlarticle.StartAnimation();
         }
-        if (socketManager.resultData.bonus.spinCount >= 0) RemainingSlotTxt.text = socketManager.resultData.bonus.spinCount.ToString();
+        if (socketManager.ResultData.features.bonus.spinCount >= 0) RemainingSlotTxt.text = socketManager.ResultData.features.bonus.spinCount.ToString();
 
 
     }
@@ -334,14 +337,14 @@ public class BonusController : MonoBehaviour
     }
     IEnumerator StopTweening()
     {
-        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        for (int i = 0; i < socketManager.ResultData.features.bonus.scatterValues.Count; i++)
         {
              
-            if (fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed == false)
+            if (fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].isFixed == false)
             {
-                //Debug.Log("Scatter :x   :" + socketManager.resultData.scatterValues[i].index[0] + "  y:" + socketManager.resultData.scatterValues[i].index[1] +"      "+ (socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()) + "   check no of row" +CheckNoOfRow());
-                fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isSlotFixed(false, socketManager.resultData.scatterValues[i].value, slotBehaviour.Sun_Sprite);
-                StartCoroutine(fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].ApplyFilter(false));
+                //Debug.Log("Scatter :x   :" + socketManager.ResultData.features.bonus.scatterValues[i].index[0] + "  y:" + socketManager.ResultData.features.bonus.scatterValues[i].index[1] +"      "+ (socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()) + "   check no of row" +CheckNoOfRow());
+                fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].isSlotFixed(false, socketManager.ResultData.features.bonus.scatterValues[i].value, slotBehaviour.Sun_Sprite);
+                StartCoroutine(fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].ApplyFilter(false));
             }
         }
 
@@ -359,11 +362,11 @@ public class BonusController : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
-        for (int i = 0; i < socketManager.resultData.scatterValues.Count; i++)
+        for (int i = 0; i < socketManager.ResultData.features.bonus.scatterValues.Count; i++)
         {
-            if (fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed == false)
+            if (fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].isFixed == false)
             {               
-                fireslot[socketManager.resultData.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.resultData.scatterValues[i].index[1]].isFixed = true;
+                fireslot[socketManager.ResultData.features.bonus.scatterValues[i].index[0] + 8 - CheckNoOfRow()].ResultSlots[socketManager.ResultData.features.bonus.scatterValues[i].index[1]].isFixed = true;
                 
             }
         }       
@@ -408,7 +411,7 @@ public class BonusController : MonoBehaviour
                 }
             }
         }
-        if (slotBehaviour.Balance_text) slotBehaviour.Balance_text.text = socketManager.playerdata.Balance.ToString("F3");
+        if (slotBehaviour.Balance_text) slotBehaviour.Balance_text.text = socketManager.PlayerData.balance.ToString("F3");
     }
 
     private void UpdateCurrentWin(double winAmount)

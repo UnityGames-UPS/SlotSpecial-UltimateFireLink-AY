@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     private GameObject Menu_Object;
     [SerializeField]
     private RectTransform Menu_RT;
-    
+
     [Header("Settings UI")]
     [SerializeField]
     private Button Settings_Button;
@@ -225,16 +225,21 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private SocketIOManager socketManager;
-
+    [SerializeField] internal GameObject RaycastBlocker;
     private bool isMusic = true;
     private bool isSound = true;
     private bool isExit = false;
     private Tween WinPopupTextTween;
     private Tween ClosePopupTween;
     internal int FreeSpins;
+
     private void Start()
     {
 
+        UpdateThebuttons();
+    }
+    internal void UpdateThebuttons()
+    {
         if (Menu_Button) Menu_Button.onClick.RemoveAllListeners();
         if (Menu_Button) Menu_Button.onClick.AddListener(OpenMenu);
 
@@ -261,7 +266,7 @@ public class UIManager : MonoBehaviour
 
         if (Paytable_Privious_Button) Paytable_Privious_Button.onClick.RemoveAllListeners();
         if (Paytable_Privious_Button) Paytable_Privious_Button.onClick.AddListener(OnPaytableNextButtonClicked);
-        
+
 
         if (Settings_Button) Settings_Button.onClick.RemoveAllListeners();
         if (Settings_Button) Settings_Button.onClick.AddListener(delegate { OpenPopup(SettingsPopup_Object); });
@@ -269,38 +274,48 @@ public class UIManager : MonoBehaviour
         if (SettingsExit_Button) SettingsExit_Button.onClick.RemoveAllListeners();
         if (SettingsExit_Button) SettingsExit_Button.onClick.AddListener(delegate { ClosePopup(SettingsPopup_Object); });
 
-       
+
 
         if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
-        if (GameExit_Button) GameExit_Button.onClick.AddListener(delegate { 
+        if (GameExit_Button) GameExit_Button.onClick.AddListener(delegate
+        {
             OpenPopup(QuitPopup_Object);
             Debug.Log("Quit event: pressed Big_X button");
-            
-            });
+
+        });
 
         if (NoQuit_Button) NoQuit_Button.onClick.RemoveAllListeners();
-        if (NoQuit_Button) NoQuit_Button.onClick.AddListener(delegate { if (!isExit) { 
-            ClosePopup(QuitPopup_Object); 
-            Debug.Log("quit event: pressed NO Button ");
+        if (NoQuit_Button) NoQuit_Button.onClick.AddListener(delegate
+        {
+            if (!isExit)
+            {
+                ClosePopup(QuitPopup_Object);
+                Debug.Log("quit event: pressed NO Button ");
                 audioController.PlayButtonAudio();
-            } });
+            }
+        });
 
         if (CrossQuit_Button) CrossQuit_Button.onClick.RemoveAllListeners();
-        if (CrossQuit_Button) CrossQuit_Button.onClick.AddListener(delegate { if (!isExit) { 
-            ClosePopup(QuitPopup_Object); 
-            Debug.Log("quit event: pressed Small_X Button ");
-            
-            } });
+        if (CrossQuit_Button) CrossQuit_Button.onClick.AddListener(delegate
+        {
+            if (!isExit)
+            {
+                ClosePopup(QuitPopup_Object);
+                Debug.Log("quit event: pressed Small_X Button ");
+
+            }
+        });
 
         if (LBExit_Button) LBExit_Button.onClick.RemoveAllListeners();
         if (LBExit_Button) LBExit_Button.onClick.AddListener(delegate { ClosePopup(LBPopup_Object); });
 
         if (YesQuit_Button) YesQuit_Button.onClick.RemoveAllListeners();
-        if (YesQuit_Button) YesQuit_Button.onClick.AddListener(delegate{
+        if (YesQuit_Button) YesQuit_Button.onClick.AddListener(delegate
+        {
             CallOnExitFunction();
             Debug.Log("quit event: pressed YES Button ");
-            
-            });
+
+        });
 
         if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.RemoveAllListeners();
         if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.AddListener(delegate { CallOnExitFunction(); socketManager.ReactNativeCallOnFailedToConnect(); }); //BackendChanges
@@ -313,8 +328,8 @@ public class UIManager : MonoBehaviour
 
         if (audioController) audioController.ToggleMute(false);
 
-        isMusic = true;
-        isSound = true;
+        isMusic = false;
+        isSound = false;
 
         if (Sound_Button) Sound_Button.onClick.RemoveAllListeners();
         if (Sound_Button) Sound_Button.onClick.AddListener(ToggleSound);
@@ -330,16 +345,15 @@ public class UIManager : MonoBehaviour
 
 
         if (SkipWinAnimation) SkipWinAnimation.onClick.RemoveAllListeners();
-        if(SkipWinAnimation) SkipWinAnimation.onClick.AddListener(SkipWin);
+        if (SkipWinAnimation) SkipWinAnimation.onClick.AddListener(SkipWin);
 
         if (StartFreeSpinButton) StartFreeSpinButton.onClick.RemoveAllListeners();
         if (StartFreeSpinButton) StartFreeSpinButton.onClick.AddListener(OnClickStartFreeSpinBtn);
     }
 
-
     public void IsPcToggle(bool isPC)
     {
-        if(isPC)
+        if (isPC)
         {
 
             Mobile_MajorMiniMinor.SetActive(false);
@@ -369,17 +383,19 @@ public class UIManager : MonoBehaviour
         OpenPopup(LBPopup_Object);
     }
 
-    internal void DisconnectionPopup(bool isReconnection)
+    internal void DisconnectionPopup()
     {
+
         if (!isExit)
         {
             OpenPopup(DisconnectPopup_Object);
         }
+
     }
 
     internal void PopulateWin(int value, double amount)
     {
-        switch(value)
+        switch (value)
         {
             case 1:
                 if (Win_Image) Win_Image.sprite = BigWin_Sprite;
@@ -404,11 +420,12 @@ public class UIManager : MonoBehaviour
         BonusWinObj.gameObject.SetActive(true);
         BonusWinBG.color = new Color(0, 0, 0, 0);
         BonusWinAmount.text = WinAmount.ToString("f3");
-        BonusWinBG.DOColor(new Color(1, 1, 1, 1), 0.3f).OnComplete(()=> {
+        BonusWinBG.DOColor(new Color(1, 1, 1, 1), 0.3f).OnComplete(() =>
+        {
 
-        BonusWinTexts.transform.localScale = new Vector3(0, 1f, 1f);
-        BonusWinTexts.SetActive(true);
-        BonusWinTexts.transform.DOScaleX(0.8f, 0.4f).SetEase(Ease.OutBack);
+            BonusWinTexts.transform.localScale = new Vector3(0, 1f, 1f);
+            BonusWinTexts.SetActive(true);
+            BonusWinTexts.transform.DOScaleX(0.8f, 0.4f).SetEase(Ease.OutBack);
 
         });
 
@@ -418,19 +435,19 @@ public class UIManager : MonoBehaviour
     {
         BonusWinObj.gameObject.SetActive(false);
         BonusWinTexts.SetActive(false);
-       
+
     }
     private void StartFreeSpins(int spins)
     {
         if (MainPopup_Object) MainPopup_Object.SetActive(false);
         if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(false);
-        
+
         slotManager.FreeSpin(spins);
     }
 
     #region Paytable
 
-    private void  OnPaytablePriviousButtonClicked()
+    private void OnPaytablePriviousButtonClicked()
     {
         audioController.PlayButtonAudio();
         if (CurrentPaytablePage > 0)
@@ -438,9 +455,10 @@ public class UIManager : MonoBehaviour
             CurrentPaytablePage--;
         }
         else
-        { CurrentPaytablePage = PaytablePages.Length - 1;
+        {
+            CurrentPaytablePage = PaytablePages.Length - 1;
         }
-        foreach(var obj in PaytablePages)
+        foreach (var obj in PaytablePages)
         {
             obj.SetActive(false);
         }
@@ -450,7 +468,7 @@ public class UIManager : MonoBehaviour
     private void OnPaytableNextButtonClicked()
     {
         audioController.PlayButtonAudio();
-        if (CurrentPaytablePage < PaytablePages.Length-1)
+        if (CurrentPaytablePage < PaytablePages.Length - 1)
         {
             CurrentPaytablePage++;
         }
@@ -471,12 +489,12 @@ public class UIManager : MonoBehaviour
     internal void FreeSpinProcess(int spins)
     {
         FreespinWinTxt.text = "0.000";
-        FreespinWinAmount =0;
+        FreespinWinAmount = 0;
         PopulateFreeSpinOption();
-        int ExtraSpins=spins-FreeSpins;
-        FreeSpins=spins;
-        
-        if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(true);           
+        int ExtraSpins = spins - FreeSpins;
+        FreeSpins = spins;
+
+        if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(true);
         if (Free_Text) Free_Text.text = ExtraSpins.ToString() + " Free spins awarded.";
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
         if (FreespinBorder) FreespinBorder.SetActive(true);
@@ -486,30 +504,30 @@ public class UIManager : MonoBehaviour
         if (FreeSpinOptionButton[5].ButtonAnim != null) FreeSpinOptionButton[5].ButtonAnim.Kill();
         transform.localScale = FreeSpinOptionButton[5].originalScale;
 
-        if(slotManager.WasAutoSpinOn)
+        if (slotManager.WasAutoSpinOn)
         {
-        
-           FreeSpinOptionButton[5].OnButtonClicked();
-     
+
+            FreeSpinOptionButton[5].OnButtonClicked();
+
         }
 
     }
 
-    internal IEnumerator ShowFreeSpinStartScreen(int spins,int m1,int m2,int m3)
+    internal IEnumerator ShowFreeSpinStartScreen(int spins, int m1, int m2, int m3)
     {
         NoOFFreeSpintxt.text = spins.ToString();
-        Multiplyers.text = m1.ToString()+"x      "+ m2.ToString() + "x    " + m3.ToString()+"x";
+        Multiplyers.text = m1.ToString() + "x      " + m2.ToString() + "x    " + m3.ToString() + "x";
         OpenPopup(BonusPopup);
         FreeSpinStartupPanel.SetActive(true);
         NoOFFreeSpins = spins;
-       
+
         if (slotManager.WasAutoSpinOn)
         {
 
             if (FreeSpinStartupPanel.activeInHierarchy)
             {
                 yield return new WaitForSeconds(1.5f);
-                
+
                 ClosePopup(BonusPopup);
                 FreeSpinStartupPanel.SetActive(false);
                 StartFreeSpins(spins);
@@ -528,35 +546,38 @@ public class UIManager : MonoBehaviour
     }
     internal void StartFirstFreeSpin(int spins, int m1, int m2, int m3)
     {
-        foreach(var btn in FreeSpinOptionButton)
+        foreach (var btn in FreeSpinOptionButton)
         {
             btn.SetIntractable(false);
         }
         DOVirtual.DelayedCall(2f, () =>
         {
-            StartCoroutine(ShowFreeSpinStartScreen(spins,m1, m2, m3));
+            StartCoroutine(ShowFreeSpinStartScreen(spins, m1, m2, m3));
         });
     }
     internal void PopulateFreeSpinOption()
     {
-        for (int i = 0; i < FreeSpinOptionButton.Length-1; i++)
+        for (int i = 0; i < FreeSpinOptionButton.Length - 1; i++)
         {
             FreeSpinOptionButton[i].SetIntractable(true);
-            FreeSpinOptionButton[i].SetData(socketManager.initialData.freespinOptions[i].count, socketManager.initialData.freespinOptions[i].multiplier[0], socketManager.initialData.freespinOptions[i].multiplier[1], socketManager.initialData.freespinOptions[i].multiplier[2]);
+            FreeSpinOptionButton[i].SetData(socketManager.InitFeature.freespinOptions[i].count, socketManager.InitFeature.freespinOptions[i].multiplier[0], socketManager.InitFeature.freespinOptions[i].multiplier[1], socketManager.InitFeature.freespinOptions[i].multiplier[2]);
         }
         FreeSpinOptionButton[5].SetIntractable(true);
         FreeSpinOptionButton[5].SelectEffectImg.gameObject.SetActive(false);
         if (FreeSpinOptionButton[5].ButtonAnim != null) FreeSpinOptionButton[5].ButtonAnim.Kill();
     }
-    void SkipWin(){
+    void SkipWin()
+    {
         Debug.Log("Skip win called");
-        if(ClosePopupTween!=null){
+        if (ClosePopupTween != null)
+        {
             ClosePopupTween.Kill();
-            ClosePopupTween=null;
+            ClosePopupTween = null;
         }
-        if(WinPopupTextTween!=null){
+        if (WinPopupTextTween != null)
+        {
             WinPopupTextTween.Kill();
-            WinPopupTextTween=null;
+            WinPopupTextTween = null;
         }
         ClosePopup(WinPopup_Object);
         slotManager.CheckPopups = false;
@@ -581,21 +602,12 @@ public class UIManager : MonoBehaviour
 
     internal void ADfunction()
     {
-        OpenPopup(ADPopup_Object); 
+        OpenPopup(ADPopup_Object);
     }
 
-    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText)
+    internal void InitialiseUIData(Paylines symbolsText)
     {
-        if (Support_Button) Support_Button.onClick.RemoveAllListeners();
-        if (Support_Button) Support_Button.onClick.AddListener(delegate { UrlButtons(SupportUrl); });
 
-        if (Terms_Button) Terms_Button.onClick.RemoveAllListeners();
-        if (Terms_Button) Terms_Button.onClick.AddListener(delegate { UrlButtons(TermsUrl); });
-
-        if (Privacy_Button) Privacy_Button.onClick.RemoveAllListeners();
-        if (Privacy_Button) Privacy_Button.onClick.AddListener(delegate { UrlButtons(PrivacyUrl); });
-
-        StartCoroutine(DownloadImage(AbtImgUrl));
         PopulateSymbolsPayout(symbolsText);
     }
 
@@ -603,72 +615,72 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < SymbolsText.Length; i++)
         {
-            if(i ==0)
+            if (i == 0)
             {
                 string text = null;
-                if (paylines.symbols[0].Multiplier[0][0] != 0)
+                if (paylines.symbols[0].multiplier[0] != 0)
                 {
-                    text += "5x - " + paylines.symbols[0].Multiplier[0][0] + "x";
+                    text += "5x - " + paylines.symbols[0].multiplier[0] + "x";
                 }
-                if (paylines.symbols[0].Multiplier[1][0] != 0)
+                if (paylines.symbols[0].multiplier[1] != 0)
                 {
-                    text += "\n4x - " + paylines.symbols[0].Multiplier[1][0] + "x";
+                    text += "\n4x - " + paylines.symbols[0].multiplier[1] + "x";
                 }
-                if (paylines.symbols[0].Multiplier[2][0] != 0)
+                if (paylines.symbols[0].multiplier[2] != 0)
                 {
-                    text += "\n3x - " + paylines.symbols[0].Multiplier[2][0] + "x";
+                    text += "\n3x - " + paylines.symbols[0].multiplier[2] + "x";
                 }
                 if (SymbolsText[i]) SymbolsText[i].text = text;
             }
             if (i >= 4)
             {
                 string text = null;
-                if (paylines.symbols[0].Multiplier[0][0] != 0)
+                if (paylines.symbols[0].multiplier[0] != 0)
                 {
-                    text += "5x - " + paylines.symbols[0].Multiplier[0][0] + "x";
+                    text += "5x - " + paylines.symbols[0].multiplier[0] + "x";
                 }
-                if (paylines.symbols[0].Multiplier[1][0] != 0)
+                if (paylines.symbols[0].multiplier[1] != 0)
                 {
-                    text += "\n4x - " + paylines.symbols[0].Multiplier[1][0] + "x";
+                    text += "\n4x - " + paylines.symbols[0].multiplier[1] + "x";
                 }
-                if (paylines.symbols[0].Multiplier[2][0] != 0)
+                if (paylines.symbols[0].multiplier[2] != 0)
                 {
-                    text += "\n3x - " + paylines.symbols[0].Multiplier[2][0] + "x";
+                    text += "\n3x - " + paylines.symbols[0].multiplier[2] + "x";
                 }
                 if (SymbolsText[i]) SymbolsText[i].text = text;
             }
             else
             {
                 string text = null;
-                if (paylines.symbols[7].Multiplier[0][0] != 0)
+                if (paylines.symbols[7].multiplier[0] != 0)
                 {
-                    text += "5x - " + paylines.symbols[7].Multiplier[0][0] + "x";
+                    text += "5x - " + paylines.symbols[7].multiplier[0] + "x";
                 }
-                if (paylines.symbols[7].Multiplier[1][0] != 0)
+                if (paylines.symbols[7].multiplier[1] != 0)
                 {
-                    text += "\n4x - " + paylines.symbols[7].Multiplier[1][0] + "x";
+                    text += "\n4x - " + paylines.symbols[7].multiplier[1] + "x";
                 }
-                if (paylines.symbols[7].Multiplier[2][0] != 0)
+                if (paylines.symbols[7].multiplier[2] != 0)
                 {
-                    text += "\n3x - " + paylines.symbols[7].Multiplier[2][0] + "x";
+                    text += "\n3x - " + paylines.symbols[7].multiplier[2] + "x";
                 }
                 if (SymbolsText[i]) SymbolsText[i].text = text;
             }
         }
 
         FreeSpin_Text.text = "3 scattered                     on reels 2, 3, and 4 pays 2x the total bet and awards selection of one of the following: \n\n " +
-            $"{socketManager.initialData.freespinOptions[0].count} free games with {socketManager.initialData.freespinOptions[0].multiplier[0]}X, {socketManager.initialData.freespinOptions[0].multiplier[1]}X, or {socketManager.initialData.freespinOptions[0].multiplier[2]}X multiplier for all line wins with \n\n" +
-            $"{socketManager.initialData.freespinOptions[1].count} free games with {socketManager.initialData.freespinOptions[1].multiplier[0]}X, {socketManager.initialData.freespinOptions[1].multiplier[1]}X, or {socketManager.initialData.freespinOptions[1].multiplier[2]}X multiplier for all line wins with \n\n" +
-            $"{socketManager.initialData.freespinOptions[2].count} free games with {socketManager.initialData.freespinOptions[2].multiplier[0]}X, {socketManager.initialData.freespinOptions[2].multiplier[1]}X, or {socketManager.initialData.freespinOptions[2].multiplier[2]}X multiplier for all line wins with \n\n" +
-            $"{socketManager.initialData.freespinOptions[3].count} free games with {socketManager.initialData.freespinOptions[3].multiplier[0]}X, {socketManager.initialData.freespinOptions[3].multiplier[1]}X, or {socketManager.initialData.freespinOptions[3].multiplier[2]}X multiplier for all line wins with \n\n" +
-            $"{socketManager.initialData.freespinOptions[4].count} free games with {socketManager.initialData.freespinOptions[4].multiplier[0]}X, {socketManager.initialData.freespinOptions[4].multiplier[1]}X, or {socketManager.initialData.freespinOptions[4].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"{socketManager.InitFeature.freespinOptions[0].count} free games with {socketManager.InitFeature.freespinOptions[0].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[0].multiplier[1]}X, or {socketManager.InitFeature.freespinOptions[0].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"{socketManager.InitFeature.freespinOptions[1].count} free games with {socketManager.InitFeature.freespinOptions[1].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[1].multiplier[1]}X, or {socketManager.InitFeature.freespinOptions[1].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"{socketManager.InitFeature.freespinOptions[2].count} free games with {socketManager.InitFeature.freespinOptions[2].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[2].multiplier[1]}X, or {socketManager.InitFeature.freespinOptions[2].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"{socketManager.InitFeature.freespinOptions[3].count} free games with {socketManager.InitFeature.freespinOptions[3].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[3].multiplier[1]}X, or {socketManager.InitFeature.freespinOptions[3].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"{socketManager.InitFeature.freespinOptions[4].count} free games with {socketManager.InitFeature.freespinOptions[4].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[4].multiplier[1]}X, or {socketManager.InitFeature.freespinOptions[4].multiplier[2]}X multiplier for all line wins with \n\n" +
             "Mystery choice of any of the above number of free games with any of the above sets of multipliers \n\n" +
-            $"to free games with {socketManager.initialData.freespinOptions[0].multiplier[0]}X, {socketManager.initialData.freespinOptions[0].multiplier[1]}X, {socketManager.initialData.freespinOptions[0].multiplier[2]}X, {socketManager.initialData.freespinOptions[3].multiplier[0]}X, {socketManager.initialData.freespinOptions[3].multiplier[1]}X, {socketManager.initialData.freespinOptions[3].multiplier[2]}X, or {socketManager.initialData.freespinOptions[4].multiplier[2]}X multiplier for all line wins with \n\n" +
+            $"to free games with {socketManager.InitFeature.freespinOptions[0].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[0].multiplier[1]}X, {socketManager.InitFeature.freespinOptions[0].multiplier[2]}X, {socketManager.InitFeature.freespinOptions[3].multiplier[0]}X, {socketManager.InitFeature.freespinOptions[3].multiplier[1]}X, {socketManager.InitFeature.freespinOptions[3].multiplier[2]}X, or {socketManager.InitFeature.freespinOptions[4].multiplier[2]}X multiplier for all line wins with \n\n" +
             "One or more in a winning combination multiplies the pay for that winning combination by a random wild multiplier from the ranges corresponding to the free games scenario selected.An alternate set of reels is used during the Free Games Bonus.Winning combinations for these reels are identical to the base game except 3 scattered               awards 2x the total bet and additional free games equal to the number of free games initially awarded.The multiplier set remains the same.The Free Games Bonus ends when no free games remain.\n\n\n" +
             "and the Fire Link Feature are not available during free games";
 
-        FireLink_Text.text = $"{socketManager.initialData.bonusTrigger[0].count[0]} or more scattered         triggers the Fire Link Feature. The feature starts with 4 unlock rows when triggered with 4 to 7             symbols, or {socketManager.initialData.bonusTrigger[1].rows} unlocked rows when triggered with {socketManager.initialData.bonusTrigger[1].count[0]} to {socketManager.initialData.bonusTrigger[1].count[1]} All unlocked rows when triggered with symbols. 3 spins are awarded.            symbols lock in place for the duration of the feature and remaining symbol positions spin independently.\n\n" +
-            "If a new appears, the symbol locks in place for the duration of the feature.The number of spins remaining resets to 3 with each newly locked that appears on an unlocked row.Collecting the indicated number of additional in unlocked rows unlocks that additional row.A maximum of 8 rows is available.\n\n" +   
+        FireLink_Text.text = $"{socketManager.InitFeature.bonusTrigger[0].count[0]} or more scattered         triggers the Fire Link Feature. The feature starts with 4 unlock rows when triggered with 4 to 7             symbols, or {socketManager.InitFeature.bonusTrigger[1].rows} unlocked rows when triggered with {socketManager.InitFeature.bonusTrigger[1].count[0]} to {socketManager.InitFeature.bonusTrigger[1].count[1]} All unlocked rows when triggered with symbols. 3 spins are awarded.            symbols lock in place for the duration of the feature and remaining symbol positions spin independently.\n\n" +
+            "If a new appears, the symbol locks in place for the duration of the feature.The number of spins remaining resets to 3 with each newly locked that appears on an unlocked row.Collecting the indicated number of additional in unlocked rows unlocks that additional row.A maximum of 8 rows is available.\n\n" +
             "symbols award credit values " +
             "Credit values range from 50 to 5000 times the bet per line.Credit values displayed on the        symbols have already been multiplied by the bet per line.Only       symbols contribute to wins.The chance of winning a jackpot increases with higher bets.Jackpots will be paid as displayed at the end of the feature.When no spins remain or when all 40 positions are locked, the award displayed on each in an unlocked row is awarded and the feature ends.An alternate set of reels is used during the Fire Link Feature.\n\n" +
             "is not available during the Fire Link Feature.appears only on two reels per feature.";
@@ -741,23 +753,43 @@ public class UIManager : MonoBehaviour
         if (Popup) Popup.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
     }
+    internal void CheckAndClosePopups()
+    {
+
+        if (ReconnectPopup_Object.activeInHierarchy)
+        {
+            ClosePopup(ReconnectPopup_Object);
+        }
+        if (DisconnectPopup_Object.activeInHierarchy)
+        {
+            ClosePopup(DisconnectPopup_Object);
+        }
+    }
+    internal void ReconnectionPopup()
+    {
+        OpenPopup(ReconnectPopup_Object);
+    }
+
 
     internal void ClosePopup(GameObject Popup)
     {
-      //  if (audioController) audioController.PlayButtonAudio();
+        if (audioController) audioController.PlayButtonAudio();
+
         if (Popup) Popup.SetActive(false);
-        if (!DisconnectPopup_Object.activeSelf) 
+        if (!DisconnectPopup_Object.activeSelf)
         {
             if (MainPopup_Object) MainPopup_Object.SetActive(false);
         }
     }
 
+
     private void ToggleMusic()
     {
+        Debug.Log("Ashu test: " + "ToggleMusic");
         if (audioController) audioController.PlayButtonAudio();
         if (isMusic)
         {
-        isMusic = false;
+            isMusic = false;
             audioController.ToggleMute(false, "bg");
 
             if (MusicOFF_Button) MusicOFF_Button.gameObject.SetActive(false);
@@ -765,13 +797,13 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-        isMusic = true;
+            isMusic = true;
             audioController.ToggleMute(true, "bg");
 
             if (MusicOFF_Button) MusicOFF_Button.gameObject.SetActive(true);
             if (Music_Button) Music_Button.gameObject.SetActive(false);
 
-            
+
         }
     }
 
@@ -786,8 +818,8 @@ public class UIManager : MonoBehaviour
         if (isSound)
         {
             isSound = false;
-            if (audioController) audioController.ToggleMute(false,"button");
-            if (audioController) audioController.ToggleMute(false,"wl");
+            if (audioController) audioController.ToggleMute(false, "button");
+            if (audioController) audioController.ToggleMute(false, "wl");
 
             if (SoundOFF_Button) SoundOFF_Button.gameObject.SetActive(false);
             if (Sound_Button) Sound_Button.gameObject.SetActive(true);
@@ -796,36 +828,12 @@ public class UIManager : MonoBehaviour
         else
         {
             isSound = true;
-            if (audioController) audioController.ToggleMute(true,"button");
-            if (audioController) audioController.ToggleMute(true,"wl");
+            if (audioController) audioController.ToggleMute(true, "button");
+            if (audioController) audioController.ToggleMute(true, "wl");
 
-            
+
             if (SoundOFF_Button) SoundOFF_Button.gameObject.SetActive(true);
             if (Sound_Button) Sound_Button.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator DownloadImage(string url)
-    {
-        // Create a UnityWebRequest object to download the image
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-
-        // Wait for the download to complete
-        yield return request.SendWebRequest();
-
-        // Check for errors
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Texture2D texture = DownloadHandlerTexture.GetContent(request);
-
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-
-            // Apply the sprite to the target image
-            AboutLogo_Image.sprite = sprite;
-        }
-        else
-        {
-            Debug.LogError("Error downloading image: " + request.error);
         }
     }
 
@@ -837,10 +845,10 @@ public class UIManager : MonoBehaviour
         Tween moveTween = SlideChangeObj.transform.DOMove(centerPos.position, 1.5f).SetEase(Ease.Linear);
         yield return moveTween.WaitForCompletion();
 
-       
+
         changeScreen?.Invoke();
 
-        
+
         moveTween = SlideChangeObj.transform.DOMove(upPos.position, 1.5f).SetEase(Ease.Linear);
         yield return moveTween.WaitForCompletion();
 
