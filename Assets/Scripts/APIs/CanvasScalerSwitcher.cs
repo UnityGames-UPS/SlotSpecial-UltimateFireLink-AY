@@ -88,11 +88,11 @@ public class CanvasScalerSwitcher : MonoBehaviour
                 }
             }
         }
-#if UNITY_WEBGL && !UNITY_EDITOR
-        // Calls the JavaScript function 'isMobile()' from Unity
-        Debug.Log("Dev_Test:"+"DeviceCheck----------------------");
-        Application.ExternalCall("isMobile");
-#endif
+        // #if UNITY_WEBGL && !UNITY_EDITOR
+        //         // Calls the JavaScript function 'isMobile()' from Unity
+        //         Debug.Log("Dev_Test:"+"DeviceCheck----------------------");
+        //         Application.ExternalCall("isMobile");
+        // #endif
     }
     private void Start()
     {
@@ -126,15 +126,15 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
     private void AssignValuseForApple()
     {
-        MainSlot.transform.localPosition = new Vector3(MainSlot.transform.localPosition.x, MainSlot.transform.localPosition.y + 100f, MainSlot.transform.localPosition.z);
-        BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
-        // SunHitPoint.transform.localPosition = new Vector3(SunHitPoint.transform.localPosition.x, SunHitPoint.transform.localPosition.y + 100f, SunHitPoint.transform.localPosition.z);
-        MobileBottomBar.transform.localPosition = new Vector3(MobileBottomBar.transform.localPosition.x, MobileBottomBar.transform.localPosition.y + 100f, MobileBottomBar.transform.localPosition.z);
+        // MainSlot.transform.localPosition = new Vector3(MainSlot.transform.localPosition.x, MainSlot.transform.localPosition.y + 100f, MainSlot.transform.localPosition.z);
+        // BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
+        // // SunHitPoint.transform.localPosition = new Vector3(SunHitPoint.transform.localPosition.x, SunHitPoint.transform.localPosition.y + 100f, SunHitPoint.transform.localPosition.z);
+        // MobileBottomBar.transform.localPosition = new Vector3(MobileBottomBar.transform.localPosition.x, MobileBottomBar.transform.localPosition.y + 100f, MobileBottomBar.transform.localPosition.z);
 
 
-        MobileTopBar.transform.localPosition = new Vector3(MobileTopBar.transform.localPosition.x, MobileTopBar.transform.localPosition.y - 100f, MobileTopBar.transform.localPosition.z);
-        MobileMajorMiniMinor.transform.localPosition = new Vector3(MobileMajorMiniMinor.transform.localPosition.x, MobileMajorMiniMinor.transform.localPosition.y - 100f, MobileMajorMiniMinor.transform.localPosition.z);
-        BonusCountUI.transform.localPosition = new Vector3(BonusCountUI.transform.localPosition.x, BonusCountUI.transform.localPosition.y - 100f, BonusCountUI.transform.localPosition.z);
+        // MobileTopBar.transform.localPosition = new Vector3(MobileTopBar.transform.localPosition.x, MobileTopBar.transform.localPosition.y - 100f, MobileTopBar.transform.localPosition.z);
+        // MobileMajorMiniMinor.transform.localPosition = new Vector3(MobileMajorMiniMinor.transform.localPosition.x, MobileMajorMiniMinor.transform.localPosition.y - 100f, MobileMajorMiniMinor.transform.localPosition.z);
+        // BonusCountUI.transform.localPosition = new Vector3(BonusCountUI.transform.localPosition.x, BonusCountUI.transform.localPosition.y - 100f, BonusCountUI.transform.localPosition.z);
 
 
     }
