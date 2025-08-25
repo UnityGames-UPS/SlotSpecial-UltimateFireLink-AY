@@ -166,6 +166,7 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
         }
         Uimanager.UpdateThebuttons();
+        slotManager.assignbuttons();
 
     }
 
@@ -207,5 +208,6 @@ public class CanvasScalerSwitcher : MonoBehaviour
         BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
 
         Uimanager.UpdateThebuttons();
+        slotManager.assignbuttons();
     }
 }

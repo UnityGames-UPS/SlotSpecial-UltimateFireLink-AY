@@ -166,6 +166,14 @@ public class SlotBehaviour : MonoBehaviour
     {
         IsAutoSpin = false;
 
+        assignbuttons();
+        if (FSBoard_Object) FSBoard_Object.SetActive(false);
+
+        tweenHeight = (15 * IconSizeFactor) - 280;
+    }
+
+    internal void assignbuttons()
+    {
         if (SlotStart_Button) SlotStart_Button.onClick.RemoveAllListeners();
         if (SlotStart_Button) SlotStart_Button.onClick.AddListener(delegate { StartSlots(); });
 
@@ -209,11 +217,7 @@ public class SlotBehaviour : MonoBehaviour
         if (M_AutoSpinStop_Button) M_AutoSpinStop_Button.onClick.AddListener(() => { StopAutoSpin(); WasAutoSpinOn = false; });
 
 
-        if (FSBoard_Object) FSBoard_Object.SetActive(false);
-
-        tweenHeight = (15 * IconSizeFactor) - 280;
     }
-
     void TurboToggle()
     {
         audioController.PlayButtonAudio();

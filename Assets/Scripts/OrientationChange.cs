@@ -38,9 +38,9 @@ public class OrientationChange : MonoBehaviour
     {
       Debug.Log($"Unity: Received Dimensions - Width: {width}, Height: {height}");
 
-      isLandscape = width > height;
+      bool ismobile = width < 760;
 
-      if (isLandscape) canvasSwitch.OnMobileDeviceDetected("pp");
+      if (!ismobile) canvasSwitch.OnMobileDeviceDetected("pp");
       else canvasSwitch.OnMobileDeviceDetected("A");
 
       // Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
