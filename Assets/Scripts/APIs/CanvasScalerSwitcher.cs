@@ -204,8 +204,8 @@ public class CanvasScalerSwitcher : MonoBehaviour
 
         SunHitPoint.transform.position = MobileSunHitPoint.position;
 
-        MainSlot.transform.localPosition = new Vector3(MainSlot.transform.localPosition.x, MainSlot.transform.localPosition.y + 100f, MainSlot.transform.localPosition.z);
-        BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
+        //   MainSlot.transform.localPosition = new Vector3(MainSlot.transform.localPosition.x, MainSlot.transform.localPosition.y + 100f, MainSlot.transform.localPosition.z);
+        //  BonusSlot.transform.localPosition = new Vector3(BonusSlot.transform.localPosition.x, BonusSlot.transform.localPosition.y + 100f, BonusSlot.transform.localPosition.z);
 
         Uimanager.UpdateThebuttons();
         slotManager.assignbuttons();

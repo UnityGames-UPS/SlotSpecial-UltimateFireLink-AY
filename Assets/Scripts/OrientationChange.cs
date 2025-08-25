@@ -19,6 +19,7 @@ public class OrientationChange : MonoBehaviour
   private Tween rotationTween;
   private Coroutine rotationRoutine;
   private bool isLandscape;
+  public bool isMobile;
   private void Awake()
   {
     ReferenceAspect = CanvasScaler.referenceResolution;
@@ -29,7 +30,20 @@ public class OrientationChange : MonoBehaviour
     if (rotationRoutine != null) StopCoroutine(rotationRoutine);
     rotationRoutine = StartCoroutine(RotationCoroutine(dimensions));
   }
+  void DiviceCheck(string device)
+  {
+    Debug.Log("Unity: Received DeviceCheck:   " + device);
+    if (device == "MB")
+    {
+      isMobile = true;
+    }
+    else
+    {
+      isMobile = false;
+    }
 
+
+  }
   IEnumerator RotationCoroutine(string dimensions)
   {
     yield return new WaitForSecondsRealtime(waitForRotation);
@@ -38,23 +52,25 @@ public class OrientationChange : MonoBehaviour
     {
       Debug.Log($"Unity: Received Dimensions - Width: {width}, Height: {height}");
 
-      bool ismobile = width < 760;
+      isLandscape = width < height;
 
-      if (!ismobile) canvasSwitch.OnMobileDeviceDetected("pp");
+      if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
       else canvasSwitch.OnMobileDeviceDetected("A");
+      if (isMobile)
+      {
+        Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, 90);
+        if (rotationTween != null && rotationTween.IsActive()) rotationTween.Kill();
+        rotationTween = UIWrapper.DOLocalRotateQuaternion(targetRotation, transitionDuration).SetEase(Ease.OutCubic);
 
-      // Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
-      // if (rotationTween != null && rotationTween.IsActive()) rotationTween.Kill();
-      // rotationTween = UIWrapper.DOLocalRotateQuaternion(targetRotation, transitionDuration).SetEase(Ease.OutCubic);
+        float currentAspectRatio = isLandscape ? (float)width / height : (float)height / width;
+        float referenceAspectRatio = ReferenceAspect.x / ReferenceAspect.y;
 
-      // float currentAspectRatio = isLandscape ? (float)width / height : (float)height / width;
-      // float referenceAspectRatio = ReferenceAspect.x / ReferenceAspect.y;
+        float targetMatch = isLandscape ? (currentAspectRatio > referenceAspectRatio ? MatchHeight : MatchWidth) : PortraitMatchWandH;
+        if (matchTween != null && matchTween.IsActive()) matchTween.Kill();
+        matchTween = DOTween.To(() => CanvasScaler.matchWidthOrHeight, x => CanvasScaler.matchWidthOrHeight = x, targetMatch, transitionDuration).SetEase(Ease.InOutQuad);
 
-      // float targetMatch = isLandscape ? (currentAspectRatio > referenceAspectRatio ? MatchHeight : MatchWidth) : PortraitMatchWandH;
-      // if (matchTween != null && matchTween.IsActive()) matchTween.Kill();
-      // matchTween = DOTween.To(() => CanvasScaler.matchWidthOrHeight, x => CanvasScaler.matchWidthOrHeight = x, targetMatch, transitionDuration).SetEase(Ease.InOutQuad);
-
-      // Debug.Log($"matchWidthOrHeight set to: {targetMatch}");
+        Debug.Log($"matchWidthOrHeight set to: {targetMatch}");
+      }
     }
     else
     {
