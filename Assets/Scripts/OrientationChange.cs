@@ -20,6 +20,7 @@ public class OrientationChange : MonoBehaviour
   private Coroutine rotationRoutine;
   private bool isLandscape;
   public bool isMobile;
+  private float rotationAngle;
   private void Awake()
   {
     ReferenceAspect = CanvasScaler.referenceResolution;
@@ -37,13 +38,45 @@ public class OrientationChange : MonoBehaviour
     {
       isMobile = true;
       changeTransforms();
+      canvasSwitch.OnMobileDeviceDetected("A");
+    }
+    else if (device == "IP")
+    {
+      isMobile = true;
+      changeTransforms();
+      canvasSwitch.OnMobileDeviceDetected("I");
     }
     else
     {
       isMobile = false;
+      canvasSwitch.OnMobileDeviceDetected("PC");
     }
 
 
+  }
+  void SwitchOrientation(string direction)
+  {
+    Debug.Log("Unity: Received SwitchOrientation:   " + direction);
+    if (direction == "potrait-primary")
+    {
+      rotationAngle = 0f;
+
+    }
+    else if (direction == "landscape-secondary")
+    {
+      rotationAngle = 90f;
+
+    }
+    else if (direction == "landscape-primary")
+    {
+      rotationAngle = -90f;
+
+    }
+    else
+    {
+      rotationAngle = -180f;
+
+    }
   }
   IEnumerator RotationCoroutine(string dimensions)
   {
@@ -55,12 +88,12 @@ public class OrientationChange : MonoBehaviour
 
       isLandscape = width < height;
 
-      if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
-      else canvasSwitch.OnMobileDeviceDetected("A");
+      // if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
+      // else canvasSwitch.OnMobileDeviceDetected("A");
       if (isMobile)
       {
         changeTransforms();
-        Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
+        Quaternion targetRotation = Quaternion.Euler(0, 0, rotationAngle);
         if (rotationTween != null && rotationTween.IsActive()) rotationTween.Kill();
         rotationTween = UIWrapper.DOLocalRotateQuaternion(targetRotation, transitionDuration).SetEase(Ease.OutCubic);
 
