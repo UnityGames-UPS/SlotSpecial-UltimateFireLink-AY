@@ -36,6 +36,7 @@ public class OrientationChange : MonoBehaviour
     if (device == "MB")
     {
       isMobile = true;
+      changeTransforms();
     }
     else
     {
@@ -58,7 +59,8 @@ public class OrientationChange : MonoBehaviour
       else canvasSwitch.OnMobileDeviceDetected("A");
       if (isMobile)
       {
-        Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, 90);
+        changeTransforms();
+        Quaternion targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
         if (rotationTween != null && rotationTween.IsActive()) rotationTween.Kill();
         rotationTween = UIWrapper.DOLocalRotateQuaternion(targetRotation, transitionDuration).SetEase(Ease.OutCubic);
 
@@ -78,6 +80,17 @@ public class OrientationChange : MonoBehaviour
     }
   }
 
+  void changeTransforms()
+  {
+    UIWrapper.anchorMin = new Vector2(0.5f, 0.5f);
+    UIWrapper.anchorMax = new Vector2(0.5f, 0.5f);
+
+    UIWrapper.pivot = new Vector2(0.5f, 0.5f);
+
+    UIWrapper.sizeDelta = new Vector2(1080, 2340);
+
+    UIWrapper.anchoredPosition = Vector2.zero;
+  }
 
 #if UNITY_EDITOR
   private void Update()
