@@ -59,22 +59,22 @@ public class OrientationChange : MonoBehaviour
     Debug.Log("Unity: Received SwitchOrientation:   " + direction);
     if (direction == "potrait-primary")
     {
-      rotationAngle = 0f;
+      rotationAngle = -180f;
 
     }
     else if (direction == "landscape-secondary")
     {
-      rotationAngle = 90f;
+      rotationAngle = -90f;
 
     }
     else if (direction == "landscape-primary")
     {
-      rotationAngle = -90f;
+      rotationAngle = 90f;
 
     }
     else
     {
-      rotationAngle = -180f;
+      rotationAngle = 0f;
 
     }
   }
