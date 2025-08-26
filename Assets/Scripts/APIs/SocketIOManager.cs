@@ -78,6 +78,12 @@ public class SocketIOManager : MonoBehaviour
 
     }
 
+    void CloseGame()
+    {
+        Debug.Log("Unity: Closing Game");
+        StartCoroutine(CloseSocket());
+    }
+
     private void Start()
     {
         //OpenWebsocket();
@@ -427,7 +433,7 @@ public class SocketIOManager : MonoBehaviour
     internal void ReactNativeCallOnFailedToConnect() //BackendChanges
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-    JSManager.SendCustomMessage("onExit");
+    JSManager.SendCustomMessage("OnExit");
 #endif
     }
 
