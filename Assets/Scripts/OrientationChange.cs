@@ -20,6 +20,7 @@ public class OrientationChange : MonoBehaviour
   private Coroutine rotationRoutine;
   private bool isLandscape;
   public bool isMobile;
+  public bool isIphone;
   private float rotationAngle;
   private void Awake()
   {
@@ -43,8 +44,9 @@ public class OrientationChange : MonoBehaviour
     else if (device == "IP")
     {
       isMobile = true;
-      changeTransforms();
-      canvasSwitch.OnMobileDeviceDetected("I");
+      isIphone = true;
+      //  changeTransforms();
+      // canvasSwitch.OnMobileDeviceDetected("I");
     }
     else
     {
@@ -85,15 +87,21 @@ public class OrientationChange : MonoBehaviour
     if (parts.Length == 2 && int.TryParse(parts[0], out int width) && int.TryParse(parts[1], out int height) && width > 0 && height > 0)
     {
       Debug.Log($"Unity: Received Dimensions - Width: {width}, Height: {height}");
-
+      Quaternion targetRotation;
       isLandscape = width < height;
-
-      // if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
-      // else canvasSwitch.OnMobileDeviceDetected("A");
       if (isMobile)
       {
         changeTransforms();
-        Quaternion targetRotation = Quaternion.Euler(0, 0, rotationAngle);
+        if (isIphone)
+        {
+          if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
+          else canvasSwitch.OnMobileDeviceDetected("I");
+          targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
+        }
+        else
+        {
+          targetRotation = Quaternion.Euler(0, 0, rotationAngle);
+        }
         if (rotationTween != null && rotationTween.IsActive()) rotationTween.Kill();
         rotationTween = UIWrapper.DOLocalRotateQuaternion(targetRotation, transitionDuration).SetEase(Ease.OutCubic);
 
@@ -103,7 +111,10 @@ public class OrientationChange : MonoBehaviour
         float targetMatch = isLandscape ? (currentAspectRatio > referenceAspectRatio ? MatchHeight : MatchWidth) : PortraitMatchWandH;
         if (matchTween != null && matchTween.IsActive()) matchTween.Kill();
         matchTween = DOTween.To(() => CanvasScaler.matchWidthOrHeight, x => CanvasScaler.matchWidthOrHeight = x, targetMatch, transitionDuration).SetEase(Ease.InOutQuad);
-
+        if (isIphone)
+        {
+          if (isLandscape) CanvasScaler.matchWidthOrHeight = 0.8f;
+        }
         Debug.Log($"matchWidthOrHeight set to: {targetMatch}");
       }
     }
