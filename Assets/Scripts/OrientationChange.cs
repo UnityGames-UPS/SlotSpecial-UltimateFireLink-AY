@@ -94,7 +94,7 @@ public class OrientationChange : MonoBehaviour
         changeTransforms();
         if (isIphone)
         {
-          if (!isMobile) canvasSwitch.OnMobileDeviceDetected("pp");
+          if (!isLandscape) canvasSwitch.OnMobileDeviceDetected("pp");
           else canvasSwitch.OnMobileDeviceDetected("I");
           targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
         }
