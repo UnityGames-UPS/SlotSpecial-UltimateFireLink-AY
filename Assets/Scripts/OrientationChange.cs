@@ -47,6 +47,7 @@ public class OrientationChange : MonoBehaviour
       isIphone = true;
       //  changeTransforms();
       // canvasSwitch.OnMobileDeviceDetected("I");
+      canvasSwitch.OnMobileDeviceDetected("I");
     }
     else
     {
@@ -94,8 +95,8 @@ public class OrientationChange : MonoBehaviour
         changeTransforms();
         if (isIphone)
         {
-          if (!isLandscape) canvasSwitch.OnMobileDeviceDetected("pp");
-          else canvasSwitch.OnMobileDeviceDetected("I");
+
+
           targetRotation = isLandscape ? Quaternion.identity : Quaternion.Euler(0, 0, -90);
         }
         else
@@ -111,10 +112,10 @@ public class OrientationChange : MonoBehaviour
         float targetMatch = isLandscape ? (currentAspectRatio > referenceAspectRatio ? MatchHeight : MatchWidth) : PortraitMatchWandH;
         if (matchTween != null && matchTween.IsActive()) matchTween.Kill();
         matchTween = DOTween.To(() => CanvasScaler.matchWidthOrHeight, x => CanvasScaler.matchWidthOrHeight = x, targetMatch, transitionDuration).SetEase(Ease.InOutQuad);
-        if (isIphone)
-        {
-          if (isLandscape) CanvasScaler.matchWidthOrHeight = 0.8f;
-        }
+        // if (isIphone)
+        // {
+        //   if (isLandscape) CanvasScaler.matchWidthOrHeight = 0.8f;
+        // }
         Debug.Log($"matchWidthOrHeight set to: {targetMatch}");
       }
     }
